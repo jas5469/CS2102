@@ -11,6 +11,15 @@ var usersRouter = require('./routes/users');
 var aboutRouter = require('./routes/about');
 /* ---------------------------- */
 
+/* --- V3: Basic Template   --- */
+var tableRouter = require('./routes/table');
+var loopsRouter = require('./routes/loops');
+/* ---------------------------- */
+
+/* --- V4: Database Connect --- */
+var selectRouter = require('./routes/select');
+/* ---------------------------- */
+
 var app = express();
 
 // view engine setup
@@ -28,6 +37,15 @@ app.use('/users', usersRouter);
 
 /* --- V2: Adding Web Pages --- */
 app.use('/about', aboutRouter);
+/* ---------------------------- */
+
+/* --- V3: Basic Template   --- */
+app.use('/table', tableRouter);
+app.use('/loops', loopsRouter);
+/* ---------------------------- */
+
+/* --- V4: Database Connect --- */
+app.use('/select', selectRouter);
 /* ---------------------------- */
 
 // catch 404 and forward to error handler

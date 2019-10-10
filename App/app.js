@@ -20,6 +20,14 @@ var loopsRouter = require('./routes/loops');
 var selectRouter = require('./routes/select');
 /* ---------------------------- */
 
+/* --- V5: Adding Forms     --- */
+var formsRouter = require('./routes/forms');
+/* ---------------------------- */
+
+/* --- V6: Modify Database  --- */
+var insertRouter = require('./routes/insert');
+/* ---------------------------- */
+
 var app = express();
 
 // view engine setup
@@ -46,6 +54,17 @@ app.use('/loops', loopsRouter);
 
 /* --- V4: Database Connect --- */
 app.use('/select', selectRouter);
+/* ---------------------------- */
+
+/* --- V5: Adding Forms     --- */
+app.use('/forms', formsRouter);
+/* ---------------------------- */
+
+/* --- V6: Modify Database  --- */
+var bodyParser = require('body-parser');
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use('/insert', insertRouter);
 /* ---------------------------- */
 
 // catch 404 and forward to error handler

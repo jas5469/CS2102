@@ -2,7 +2,7 @@
 <html>
   <head>
 		<!-- Page Title -->
-    <title>CS2102 Database Connect</title>
+    <title>CrowdFunding</title>
     <link rel='stylesheet' href='/stylesheets/style.css' />
 		
 		<!-- CSS for Styling -->
@@ -14,41 +14,42 @@
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js" integrity="sha384-B0UglyR+jN6CkvvICOB2joaf5I4l3gm9GU6Hc1og6Ls7i6U/mkkaduKaBhlAXv9k" crossorigin="anonymous"></script>
   </head>
   <body>
-    <h1>CS2102: <%= title%></h1>
+    <h1>CrowdFunding: <%= title%></h1>
 		<table class="table">
-			<thead>
+			<thead class="thead-dark">
 				<tr>
-					<th scope="col">Matric</th>
-					<th scope="col">Name</th>
-					<th scope="col">Faculty</th>
+					<th scope="col">Username</th>
+					<th scope="col">Password</th>
+					<th scope="col">Registered Date</th>
 				</tr>
 			</thead>
 			<tbody>
 				<% for(var i=0; i<data.length; i++) { %>
 				<tr>
-					<td><%= data[i].matric%></td>
-					<td><%= data[i].name%></td>
-					<td><%= data[i].faculty%></td>
+					<td><%= data[i].username%></td>
+					<td><%= data[i].password%></td>
+					<td><%= data[i].r_date%></td>
 				</tr>
 				<% } %>
 			</tbody>
 		</table>
+
 		<h3>CODE:</h3>
 		<code class="language-html" data-lang="html">
 		&lt;table class="table"&gt;<br />
 		&nbsp; &nbsp; &nbsp;&lt;thead&gt;<br />
 		&nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp;&lt;tr&gt;<br />
-		&nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp;&lt;th scope="col"&gt;Matric&lt;/th&gt;<br />
-		&nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp;&lt;th scope="col"&gt;Name&lt;/th&gt;<br />
-		&nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp;&lt;th scope="col"&gt;Faculty&lt;/th&gt;<br />
+		&nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp;&lt;th scope="col"&gt;Username&lt;/th&gt;<br />
+		&nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp;&lt;th scope="col"&gt;password&lt;/th&gt;<br />
+		&nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp;&lt;th scope="col"&gt;Registered Date&lt;/th&gt;<br />
 		&nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp;&lt;/tr&gt;<br />
 		&nbsp; &nbsp; &nbsp;&lt;/thead&gt;<br />
 		&nbsp; &nbsp; &nbsp;&lt;tbody&gt;<br />
 		&nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp;&lt;% for(var i=0; i&lt;data.length; i++) { %&gt;<br />
 		&nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp;&lt;tr&gt;<br />
-		&nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp;&lt;td&gt;&lt;%= data[i].matric%&gt;&lt;/td&gt;<br />
-		&nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp;&lt;td&gt;&lt;%= data[i].name%&gt;&lt;/td&gt;<br />
-		&nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp;&lt;td&gt;&lt;%= data[i].faculty%&gt;&lt;/td&gt;<br />
+		&nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp;&lt;td&gt;&lt;%= data[i].username%&gt;&lt;/td&gt;<br />
+		&nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp;&lt;td&gt;&lt;%= data[i].password%&gt;&lt;/td&gt;<br />
+		&nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp;&lt;td&gt;&lt;%= data[i].r_date%&gt;&lt;/td&gt;<br />
 		&nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp;&lt;/tr&gt;<br />
 		&nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp;&lt;% } %&gt;<br />
 		&nbsp; &nbsp; &nbsp;&lt;/tbody&gt;<br />

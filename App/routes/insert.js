@@ -15,7 +15,7 @@ var sql_query = 'INSERT INTO users VALUES';
 
 // GET
 router.get('/', function(req, res, next) {
-	res.render('insert', { title: 'Modifying Database' });
+	res.render('insert', { title: 'Register Account' });
 });
 
 var today = new Date();

@@ -1,5 +1,6 @@
 var express = require('express');
 var router = express.Router();
+var moment = require('moment');
 
 const { Pool } = require('pg')
 /* --- V7: Using Dot Env ---
@@ -18,11 +19,11 @@ const pool = new Pool({
 console.log(process.env.DATABASE_URL);
 
 /* SQL Query */
-var sql_query = 'SELECT * FROM users';
+var sql_query = 'SELECT * FROM Projects p, ProjectTemplates pt WHERE p.tname=pt.tname';
 
 router.get('/', function(req, res, next) {
 	pool.query(sql_query, (err, data) => {
-		res.render('select', { title: 'Database Connect', data: data.rows });
+		res.render('select', { title: 'Projects', data: data.rows, moment:moment });
 	});
 });
 

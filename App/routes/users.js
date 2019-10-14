@@ -1,9 +1,22 @@
 var express = require('express');
 var router = express.Router();
 
-/* GET users listing. */
-router.get('/', function(req, res, next) {
-  res.send('respond with a resource');
+const { Pool } = require('pg')
+
+const pool = new Pool({
+  connectionString: process.env.DATABASE_URL
 });
 
+/* SQL Query */
+var sql_query = 'SELECT * FROM users';
+
+router.get('/', function(req, res, next) {
+  pool.query(sql_query, (err, data) => {
+    res.render('users', { title: 'User List', data: data.rows });
+});
+});
+
+console.log("here");
+
 module.exports = router;
+

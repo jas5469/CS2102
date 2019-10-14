@@ -17,7 +17,7 @@
   <div>
 
       <nav class="navbar navbar-expand-lg navbar-dark bg-dark" >
-          <a class="navbar-brand" href="#">WeFund</a>
+          <a class="navbar-brand" href="/">WeFund</a>
           <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
               <span class="navbar-toggler-icon"></span>
           </button>
@@ -31,20 +31,41 @@
                   </li>
               </ul>
           </div>
+          <button class="btn btn-info"  type="button" data-toggle="collapse"  onclick="location.href='/insert'" style="float:right">
+              Register User
+          </button>
       </nav>
       <br />
       <h1>CrowdFunding Project</h1>
 
-      <div class="jumbotron">
+      <div class="jumbotron" style="padding-top: 32px">
           <p>
               CrowdFunding Project is a website where you can create projects and also fund for projects</><br />
           </p>
-          <button class="button" type="button" data-toggle="collapse"  onclick="location.href='/select'">
-                View Project List
-          </button>
-          <button class="button" type="button" data-toggle="collapse" onclick="location.href='/users'" >
-              View User List
-          </button>
+
+          <div class ="container">
+              <div class="row">
+                  <div class="col-sm">
+                       <button class="btn btn-primary"  type="button" data-toggle="collapse"  onclick="location.href='/select'">
+                          View Project List
+                      </button>
+                      <button class="btn btn-secondary" type="button" data-toggle="collapse" onclick="location.href='/users'" >
+                          View User List
+                      </button>
+
+                  </div>
+                  <div class="col-sm">
+                  </div>
+                  <div class="col-sm">
+                      <button class= "btn btn-dark" type="button" data-toggle="collapse" onclick="location.href='/insertproject'" style="float:right" >
+                          Create Project
+                      </button>
+                  </div>
+              </div>
+
+          </div>
+
+
       </div>
   </div>
 

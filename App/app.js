@@ -29,6 +29,7 @@ var formsRouter = require('./routes/forms');
 
 /* --- V6: Modify Database  --- */
 var insertRouter = require('./routes/insert');
+var insertProjectRouter = require('./routes/insertproject');
 /* ---------------------------- */
 
 var app = express();
@@ -68,6 +69,7 @@ var bodyParser = require('body-parser');
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use('/insert', insertRouter);
+app.use('/insertproject', insertProjectRouter);
 /* ---------------------------- */
 
 // catch 404 and forward to error handler

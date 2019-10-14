@@ -24,3 +24,6 @@ function check(event) {
 		return false;
 	}
 }
+
+function checkProject(event) {
+}

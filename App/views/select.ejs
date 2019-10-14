@@ -18,42 +18,26 @@
 		<table class="table">
 			<thead class="thead-dark">
 				<tr>
-					<th scope="col">Username</th>
-					<th scope="col">Password</th>
-					<th scope="col">Registered Date</th>
+					<th scope="col">Name</th>
+					<th scope="col">Creator</th>
+					<th scope="col">Category</th>
+					<th scope="col">Start Date</th>
+					<th scope="col">End Date</th>
+					<th scope="col">Goal</th>
 				</tr>
 			</thead>
 			<tbody>
 				<% for(var i=0; i<data.length; i++) { %>
 				<tr>
-					<td><%= data[i].username%></td>
-					<td><%= data[i].password%></td>
-					<td><%= data[i].r_date%></td>
+					<td><%= data[i].pname%></td>
+					<td><%= data[i].cname%></td>
+					<td><%= data[i].category%></td>
+					<td><%= moment(data[i].s_date).format("DD/MM/YYYY")%></td>
+					<td><%= moment(data[i].e_date).format("DD/MM/YYYY")%></td>
+					<td><%= data[i].f_goal%></td>
 				</tr>
 				<% } %>
 			</tbody>
 		</table>
-
-		<h3>CODE:</h3>
-		<code class="language-html" data-lang="html">
-		&lt;table class="table"&gt;<br />
-		&nbsp; &nbsp; &nbsp;&lt;thead&gt;<br />
-		&nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp;&lt;tr&gt;<br />
-		&nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp;&lt;th scope="col"&gt;Username&lt;/th&gt;<br />
-		&nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp;&lt;th scope="col"&gt;password&lt;/th&gt;<br />
-		&nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp;&lt;th scope="col"&gt;Registered Date&lt;/th&gt;<br />
-		&nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp;&lt;/tr&gt;<br />
-		&nbsp; &nbsp; &nbsp;&lt;/thead&gt;<br />
-		&nbsp; &nbsp; &nbsp;&lt;tbody&gt;<br />
-		&nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp;&lt;% for(var i=0; i&lt;data.length; i++) { %&gt;<br />
-		&nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp;&lt;tr&gt;<br />
-		&nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp;&lt;td&gt;&lt;%= data[i].username%&gt;&lt;/td&gt;<br />
-		&nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp;&lt;td&gt;&lt;%= data[i].password%&gt;&lt;/td&gt;<br />
-		&nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp;&lt;td&gt;&lt;%= data[i].r_date%&gt;&lt;/td&gt;<br />
-		&nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp;&lt;/tr&gt;<br />
-		&nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp;&lt;% } %&gt;<br />
-		&nbsp; &nbsp; &nbsp;&lt;/tbody&gt;<br />
-		&lt;/table&gt;
-		</code>
   </body>
 </html>

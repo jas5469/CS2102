@@ -31,9 +31,9 @@ CREATE TABLE Creators (
 
 CREATE TABLE ProjectTemplates (
     tname               VARCHAR(100),
-    category            VARCHAR(100),
+    category            VARCHAR(100) NOT NULL,
     style               TEXT,
-    aname               VARCHAR(50),
+    aname               VARCHAR(50) NOT NULL,
     PRIMARY KEY (tname),
     FOREIGN KEY (aname) REFERENCES Admins(aname) ON DELETE CASCADE
 );
@@ -42,30 +42,30 @@ CREATE TABLE Projects (
     pname               VARCHAR(100),
     cname               VARCHAR(50) NOT NULL,
     tname               VARCHAR(50) NOT NULL,
-    s_date              date,
-    e_date              date,
-    f_goal              numeric,
-    status              boolean,
-    description         TEXT,
+    s_date              date NOT NULL,
+    e_date              date NOT NULL,
+    f_goal              numeric NOT NULL,
+    description         TEXT NOT NULL,
     PRIMARY KEY (pname),
     FOREIGN KEY (cname) REFERENCES Creators(cname) ON DELETE CASCADE,
     FOREIGN KEY (tname) REFERENCES ProjectTemplates(tname) ON DELETE CASCADE,
     CHECK(s_date <= e_date)
 );
 
+--weakentitry?
 CREATE TABLE Comments (
-    username            VARCHAR(50),
+    username            VARCHAR(50), 
     pname               VARCHAR(100),
-    cid                 VARCHAR(50),
-    descr               TEXT,
-    PRIMARY KEY (username,pname,cid),
+    c_date              DATE,
+    descr               TEXT NOT NULL,
+    PRIMARY KEY (username,pname,c_date),
     FOREIGN KEY (username) REFERENCES Users(username),
     FOREIGN KEY (pname) REFERENCES Projects(pname)
 );
 
 CREATE TABLE Saves (
-    username             VARCHAR(50),
-    pname                VARCHAR(100),
+    username             VARCHAR(50) NOT NULL,
+    pname                VARCHAR(100) NOT NULL,
     PRIMARY KEY (username, pname),
     FOREIGN KEY (username) REFERENCES Users(username) ON DELETE CASCADE,
     FOREIGN KEY (pname) REFERENCES Projects(pname) ON DELETE CASCADE
@@ -81,21 +81,17 @@ CREATE TABLE Follows (
 );
 
 CREATE TABLE ProjectUpdates (
-    --cname         VARCHAR(50), --do we still need cname since there's only one creator and update is definitely by creator?
     pname         VARCHAR(50),
-    uid           VARCHAR(50),
-    u_date        date,
-    descr         TEXT,
-    --PRIMARY KEY (cname, pname, uid),
-    PRIMARY KEY (pname, uid),
-    --FOREIGN KEY (cname) REFERENCES Creators(cname),
+    u_date        date NOT NULL,
+    descr         TEXT NOT NULL,
+    PRIMARY KEY (pname, u_date),
     FOREIGN KEY (pname) REFERENCES Projects(pname) ON DELETE CASCADE
 );
 
 CREATE TABLE FundingTiers (
     tname               VARCHAR(50),
     pname               VARCHAR(50),
-    amount              numeric,        --will fall into tier if value is >= amount and <= next tier amount
+    amount              numeric NOT NULL,        --will fall into tier if value is >= amount and <= next tier amount
     PRIMARY KEY (tname, pname),
     FOREIGN KEY (pname) REFERENCES Projects(pname) ON DELETE CASCADE
 );
@@ -104,9 +100,9 @@ CREATE TABLE Fundings (
     pname         VARCHAR(50),
     tname         VARCHAR(50),
     username      VARCHAR(50),
-    f_date        date,
-    amount        numeric,
-    status        boolean,       --still want to keep fund tuple even though retracted
+    f_date        date NOT NULL,
+    amount        numeric NOT NULL,
+    status        boolean NOT NULL,       --still want to keep fund tuple even though retracted
     PRIMARY KEY (pname,tname,username),
     FOREIGN KEY (tname,pname) REFERENCES FundingTiers(tname,pname) ON DELETE CASCADE,
     FOREIGN KEY (username) REFERENCES Users(username) ON DELETE CASCADE

@@ -13,13 +13,14 @@ const passport = require('passport')
 
 const app = express();
 
+console.log(require('dotenv').config());
 // Body Parser Config
 app.use(bodyParser.urlencoded({
   extended: false
 }));
 
 // Authentication Setup
-//require('dotenv').load();
+require('dotenv').load();
 require('./auth').init(app);
 app.use(session({
   secret: process.env.SECRET,

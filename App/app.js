@@ -14,6 +14,7 @@ const moment = require('moment');
 
 const app = express();
 
+console.log(require('dotenv').config());
 // Body Parser Config
 app.use(bodyParser.urlencoded({
   extended: false

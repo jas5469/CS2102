@@ -1,2 +1,3 @@
+.DS_Store
 # Don't track content of these folder
-.env/
+/App/.env

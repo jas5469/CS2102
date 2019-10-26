@@ -1,6 +1,7 @@
 const sql_query = require('../sql');
 const passport = require('passport');
-const bcrypt = require('bcrypt')
+const bcrypt = require('bcrypt');
+const moment = require('moment');
 
 // Postgre SQL Connection
 const { Pool } = require('pg');
@@ -21,6 +22,8 @@ function initRouter(app) {
 	app.get('/dashboard', passport.authMiddleware(), dashboard);
 	app.get('/games'    , passport.authMiddleware(), games    );
 	app.get('/plays'    , passport.authMiddleware(), plays    );
+
+	app.get('/projects' , passport.authMiddleware(), projects );
 	
 	app.get('/register' , passport.antiMiddleware(), register );
 	app.get('/password' , passport.antiMiddleware(), retrieve );
@@ -30,6 +33,8 @@ function initRouter(app) {
 	app.post('/update_pass', passport.authMiddleware(), update_pass);
 	app.post('/add_game'   , passport.authMiddleware(), add_game   );
 	app.post('/add_play'   , passport.authMiddleware(), add_play   );
+
+	app.post('/add_project'   , passport.authMiddleware(), add_project   );
 	
 	app.post('/reg_user'   , passport.antiMiddleware(), reg_user   );
 
@@ -48,10 +53,10 @@ function initRouter(app) {
 function basic(req, res, page, other) {
 	var info = {
 		page: page,
-		user: req.user.username,
+		username: req.user.username,
 		firstname: req.user.firstname,
 		lastname : req.user.lastname,
-		status   : req.user.status,
+		rdate : req.user.r_date
 	};
 	if(other) {
 		for(var fld in other) {
@@ -159,6 +164,26 @@ function plays(req, res, next) {
 		});
 	});
 }
+function projects(req, res, next) {
+	var ctx = 0, avg = 0, tbl, templates;
+	pool.query(sql_query.query.all_projects, [req.user.username], (err, data) => {
+		if(err || !data.rows || data.rows.length == 0) {
+			ctx = 0;
+			tbl = [];
+		} else {
+			ctx = data.rows.length;
+			tbl = data.rows;
+		}
+		pool.query(sql_query.query.all_templates, (err, data) => {
+			if(err || !data.rows || data.rows.length == 0) {
+				templates = [];
+			} else {
+				templates = data.rows;
+			}
+			basic(req, res, 'projects', { ctx: ctx, tbl: tbl, templates: templates, moment: moment, project_msg: msg(req, 'add', 'Project added successfully', 'Project does not exist'), auth: true });
+		});
+	});
+}
 
 function register(req, res, next) {
 	res.render('register', { page: 'register', auth: false });
@@ -226,13 +251,33 @@ function add_play(req, res, next) {
 		}
 	});
 }
+function add_project(req, res, next) {
+	var username = req.user.username;
+	var pname  = req.body.pname;
+	var tname  = req.body.tname;
+	var today = new Date();
+	var s_date = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate();
+	var e_date   = req.body.e_date;
+	var f_goal = req.body.f_goal;
+	var descr = req.body.descr;
+	pool.query(sql_query.query.add_project, [pname, username, tname, s_date, e_date, f_goal, descr], (err, data) => {
+		if(err) {
+			console.error("Error in adding project");
+			res.redirect('/projects?add=fail');
+		} else {
+			res.redirect('/projects?add=pass');
+		}
+	});
+}
 
 function reg_user(req, res, next) {
 	var username  = req.body.username;
 	var password  = bcrypt.hashSync(req.body.password, salt);
 	var firstname = req.body.firstname;
 	var lastname  = req.body.lastname;
-	pool.query(sql_query.query.add_user, [username,password,firstname,lastname], (err, data) => {
+	var today = new Date();
+	var date = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate();
+	pool.query(sql_query.query.add_user, [username,password,firstname,lastname,date], (err, data) => {
 		if(err) {
 			console.error("Error in adding user", err);
 			res.redirect('/register?reg=fail');
@@ -240,9 +285,6 @@ function reg_user(req, res, next) {
 			req.login({
 				username    : username,
 				passwordHash: password,
-				firstname   : firstname,
-				lastname    : lastname,
-				status      : 'Bronze'
 			}, function(err) {
 				if(err) {
 					return res.redirect('/register?reg=fail');

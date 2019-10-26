@@ -12,7 +12,9 @@ DROP TABLE IF EXISTS Users CASCADE;
 
 CREATE TABLE Users (
     username        VARCHAR(50),
-    password        VARCHAR(50),
+    password        VARCHAR(64),
+    firstname       VARCHAR(50),
+    lastname        VARCHAR(50),
     r_date          date,
     PRIMARY KEY (username)
 );
@@ -108,16 +110,16 @@ CREATE TABLE Fundings (
     FOREIGN KEY (username) REFERENCES Users(username) ON DELETE CASCADE
 );
 
-INSERT INTO Users VALUES ('UA','11111111', DATE('2018-12-12'));
-INSERT INTO Users VALUES ('UB','22222222', DATE('2018-12-12'));
-INSERT INTO Users VALUES ('UC','33333333', DATE('2018-12-12'));
-INSERT INTO Users VALUES ('UD','44444444', DATE('2018-12-12'));
-INSERT INTO Users VALUES ('CA','55555555', DATE('2018-12-12'));
-INSERT INTO Users VALUES ('CB','66666666', DATE('2018-12-12'));
-INSERT INTO Users VALUES ('CC','77777777', DATE('2018-12-12'));
-INSERT INTO Users VALUES ('CD','88888888', DATE('2018-12-12'));
-INSERT INTO Users VALUES ('AA','99999999', DATE('2018-12-12'));
-INSERT INTO Users VALUES ('AB','12121212', DATE('2018-12-12'));
+INSERT INTO Users VALUES ('UA','$2b$10$x6qys44jV5yi72aCxlDSm.cvT2FzCeBbTOSj3COxqP88m7KkWrCp2', 'test', 'test', DATE('2018-12-12'));
+INSERT INTO Users VALUES ('UB','$2b$10$x6qys44jV5yi72aCxlDSm.cvT2FzCeBbTOSj3COxqP88m7KkWrCp2', 'test', 'test', DATE('2018-12-12'));
+INSERT INTO Users VALUES ('UC','$2b$10$x6qys44jV5yi72aCxlDSm.cvT2FzCeBbTOSj3COxqP88m7KkWrCp2', 'test', 'test', DATE('2018-12-12'));
+INSERT INTO Users VALUES ('UD','$2b$10$x6qys44jV5yi72aCxlDSm.cvT2FzCeBbTOSj3COxqP88m7KkWrCp2', 'test', 'test', DATE('2018-12-12'));
+INSERT INTO Users VALUES ('CA','$2b$10$x6qys44jV5yi72aCxlDSm.cvT2FzCeBbTOSj3COxqP88m7KkWrCp2', 'test', 'test', DATE('2018-12-12'));
+INSERT INTO Users VALUES ('CB','$2b$10$x6qys44jV5yi72aCxlDSm.cvT2FzCeBbTOSj3COxqP88m7KkWrCp2', 'test', 'test', DATE('2018-12-12'));
+INSERT INTO Users VALUES ('CC','$2b$10$x6qys44jV5yi72aCxlDSm.cvT2FzCeBbTOSj3COxqP88m7KkWrCp2', 'test', 'test', DATE('2018-12-12'));
+INSERT INTO Users VALUES ('CD','$2b$10$x6qys44jV5yi72aCxlDSm.cvT2FzCeBbTOSj3COxqP88m7KkWrCp2', 'test', 'test', DATE('2018-12-12'));
+INSERT INTO Users VALUES ('AA','$2b$10$x6qys44jV5yi72aCxlDSm.cvT2FzCeBbTOSj3COxqP88m7KkWrCp2', 'test', 'test', DATE('2018-12-12'));
+INSERT INTO Users VALUES ('AB','$2b$10$x6qys44jV5yi72aCxlDSm.cvT2FzCeBbTOSj3COxqP88m7KkWrCp2', 'test', 'test', DATE('2018-12-12'));
 
 INSERT INTO Creators VALUES ('CA');
 INSERT INTO Creators VALUES ('CB');
@@ -131,20 +133,20 @@ INSERT INTO ProjectTemplates VALUES ('TA', 'Music', 'Test', 'AA');
 INSERT INTO ProjectTemplates VALUES ('TB', 'Games', 'Test', 'AB');
 INSERT INTO ProjectTemplates VALUES ('TC', 'Books', 'Test', 'AB');
 
-INSERT INTO Projects VALUES ('PA', 'CA', 'TA', DATE('2019-1-1'), DATE('2019-12-30'), 300000, FALSE, 'Test Description');
-INSERT INTO Projects VALUES ('PB', 'CA', 'TA', DATE('2019-1-1'), DATE('2019-12-30'), 5000, TRUE, 'Test Description');
-INSERT INTO Projects VALUES ('PC', 'CB', 'TB', DATE('2019-1-1'), DATE('2019-12-30'), 1000, TRUE, 'Test Description');
-INSERT INTO Projects VALUES ('PD', 'CC', 'TB', DATE('2019-1-1'), DATE('2019-12-30'), 28000, FALSE, 'Test Description');
-INSERT INTO Projects VALUES ('PE', 'CD', 'TC', DATE('2019-1-1'), DATE('2019-12-30'), 25000, FALSE, 'Test Description');
-INSERT INTO Projects VALUES ('PF', 'CA', 'TC', DATE('2019-1-1'), DATE('2019-12-30'), 680000, FALSE, 'Test Description');
+INSERT INTO Projects VALUES ('PA', 'CA', 'TA', DATE('2019-1-1'), DATE('2019-12-30'), 300000, 'Test Description');
+INSERT INTO Projects VALUES ('PB', 'CA', 'TA', DATE('2019-1-1'), DATE('2019-12-30'), 5000, 'Test Description');
+INSERT INTO Projects VALUES ('PC', 'CB', 'TB', DATE('2019-1-1'), DATE('2019-12-30'), 1000, 'Test Description');
+INSERT INTO Projects VALUES ('PD', 'CC', 'TB', DATE('2019-1-1'), DATE('2019-12-30'), 28000, 'Test Description');
+INSERT INTO Projects VALUES ('PE', 'CD', 'TC', DATE('2019-1-1'), DATE('2019-12-30'), 25000, 'Test Description');
+INSERT INTO Projects VALUES ('PF', 'CA', 'TC', DATE('2019-1-1'), DATE('2019-12-30'), 680000, 'Test Description');
 
-INSERT INTO Comments VALUES ('UA', 'PA', 'C1', 'This project is great!');
-INSERT INTO Comments VALUES ('UB', 'PB', 'C2', 'This project is amazing!');
-INSERT INTO Comments VALUES ('UC', 'PC', 'C3', 'This project has potential!');
-INSERT INTO Comments VALUES ('UA', 'PD', 'C4', 'This project sounds cool!');
-INSERT INTO Comments VALUES ('UB', 'PA', 'C5', 'This project is revolutionary!');
-INSERT INTO Comments VALUES ('UC', 'PA', 'C6', 'This project sounds interesting!');
-INSERT INTO Comments VALUES ('UA', 'PB', 'C7', 'This project looks promising!');
+INSERT INTO Comments VALUES ('UA', 'PA', DATE('2019-1-1'), 'This project is great!');
+INSERT INTO Comments VALUES ('UB', 'PB', DATE('2019-1-1'), 'This project is amazing!');
+INSERT INTO Comments VALUES ('UC', 'PC', DATE('2019-1-1'), 'This project has potential!');
+INSERT INTO Comments VALUES ('UA', 'PD', DATE('2019-1-1'), 'This project sounds cool!');
+INSERT INTO Comments VALUES ('UB', 'PA', DATE('2019-1-1'), 'This project is revolutionary!');
+INSERT INTO Comments VALUES ('UC', 'PA', DATE('2019-1-1'), 'This project sounds interesting!');
+INSERT INTO Comments VALUES ('UA', 'PB', DATE('2019-1-1'), 'This project looks promising!');
 
 INSERT INTO Saves VALUES('UA', 'PB');
 INSERT INTO Saves VALUES('UA', 'PC');
@@ -157,10 +159,10 @@ INSERT INTO Follows VALUES ('UB', 'CC');
 INSERT INTO Follows VALUES ('UC', 'CD');
 INSERT INTO Follows VALUES ('UD', 'CA');
 
-INSERT INTO ProjectUpdates VALUES ('PA', 'U1', DATE('2019-1-2'), 'This is a project update!');
-INSERT INTO ProjectUpdates VALUES ('PB', 'U1', DATE('2019-1-2'), 'This is a project update!');
-INSERT INTO ProjectUpdates VALUES ('PA', 'U2', DATE('2019-2-1'), 'This is a project update 2!');
-INSERT INTO ProjectUpdates VALUES ('PC', 'U1', DATE('2019-2-1'), 'This is a project update!');
+INSERT INTO ProjectUpdates VALUES ('PA', DATE('2019-1-2'), 'This is a project update!');
+INSERT INTO ProjectUpdates VALUES ('PB', DATE('2019-1-2'), 'This is a project update!');
+INSERT INTO ProjectUpdates VALUES ('PA', DATE('2019-2-1'), 'This is a project update 2!');
+INSERT INTO ProjectUpdates VALUES ('PC', DATE('2019-2-1'), 'This is a project update!');
 
 --each project should have at least one funding tier
 INSERT INTO FundingTiers VALUES ('T1', 'PA', 100);

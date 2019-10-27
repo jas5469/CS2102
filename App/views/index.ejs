@@ -29,16 +29,16 @@
 				<div class="container-fluid">
 					<div class="card mb-3">
 						<div class="card-header">
-							<i class="fas fa-dice"></i> &nbsp; All Games @ Meeple World
+							<i class="fas fa-dice"></i> &nbsp; Project Created
 						</div>
 						<div class="card-body">
 							<div class="table-responsive">
 								<table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
 									<thead>
 										<tr>
-											<th>Rank</th>
-											<th>Game Name</th>
-											<th>Rating</th>
+											<th>Number</th>
+											<th>Project Name</th>
+											<th>Creator</th>
 										</tr>
 									</thead>
 									<tfoot>
@@ -48,9 +48,9 @@
 									<tbody>
 										<% for(var i=0; i<tbl.length; i++) { %>
 										<tr>
-											<td><%= tbl[i].ranking%></td>
-											<td><%= tbl[i].gamename%></td>
-											<td><%= tbl[i].rating%></td>
+											<td><%= i+1 %></td>
+											<td><%= tbl[i].pname%></td>
+											<td><%= tbl[i].cname%></td>
 										</tr>
 										<% } %>
 									</tbody>
@@ -98,7 +98,7 @@
 								</ul>
 							</nav>
 						</div>
-						<div class="card-footer small text-muted">CS2102 Database Project</div>
+						<div class="card-footer small text-muted">Fund interesting projects here</div>
 					</div>
 				</div>
 			</div>

@@ -79,7 +79,7 @@ function index(req, res, next) {
 	if(Object.keys(req.query).length > 0 && req.query.p) {
 		idx = req.query.p-1;
 	}
-	pool.query(sql_query.query.page_lims, [idx*10], (err, data) => {
+	pool.query(sql_query.query.page_lims, (err, data) => {
 		if(err || !data.rows || data.rows.length == 0) {
 			tbl = [];
 		} else {
@@ -93,6 +93,7 @@ function index(req, res, next) {
 			}
 			total = ctx%10 == 0 ? ctx/10 : (ctx - (ctx%10))/10 + 1;
 			console.log(idx*10, idx*10+10, total);
+			console.log(tbl);
 			if(!req.isAuthenticated()) {
 				res.render('index', { page: '', auth: false, tbl: tbl, ctx: ctx, p: idx+1, t: total });
 			} else {

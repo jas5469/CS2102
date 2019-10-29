@@ -15,6 +15,7 @@ sql.query = {
 	all_plays: 'SELECT gamename AS game, user1, user2, winner FROM game_plays WHERE user1=$1 OR user2=$1',
 	 
 	all_projects: 'SELECT * FROM projects WHERE cname=$1',
+	project_info: 'SELECT * FROM projects WHERE pname=$1',
 	all_templates: 'SELECT * FROM projecttemplates',
 
 	// Insertion

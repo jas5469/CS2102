@@ -24,7 +24,9 @@ function initRouter(app) {
 	app.get('/plays'    , passport.authMiddleware(), plays    );
 
 	app.get('/projects' , passport.authMiddleware(), projects );
-	
+	app.get('/projectInfo' , passport.authMiddleware(), projectInfo);
+	app.get('/projectInfo/:id' , passport.authMiddleware(), projectInfo);
+
 	app.get('/register' , passport.antiMiddleware(), register );
 	app.get('/password' , passport.antiMiddleware(), retrieve );
 	
@@ -56,7 +58,7 @@ function basic(req, res, page, other) {
 		username: req.user.username,
 		firstname: req.user.firstname,
 		lastname : req.user.lastname,
-		rdate : req.user.r_date
+		rdate : req.user.r_date,
 	};
 	if(other) {
 		for(var fld in other) {
@@ -93,7 +95,6 @@ function index(req, res, next) {
 			}
 			total = ctx%10 == 0 ? ctx/10 : (ctx - (ctx%10))/10 + 1;
 			console.log(idx*10, idx*10+10, total);
-			console.log(tbl);
 			if(!req.isAuthenticated()) {
 				res.render('index', { page: '', auth: false, tbl: tbl, ctx: ctx, p: idx+1, t: total });
 			} else {
@@ -184,6 +185,22 @@ function projects(req, res, next) {
 			basic(req, res, 'projects', { ctx: ctx, tbl: tbl, templates: templates, moment: moment, project_msg: msg(req, 'add', 'Project added successfully', 'Project does not exist'), auth: true });
 		});
 	});
+}
+function projectInfo(req, res, next) {
+	var ctx = 0, avg = 0, tbl, templates;
+	var pname = req.params.id;
+	pool.query(sql_query.query.project_info, [pname], (err, data) => {
+		if(err || !data.rows || data.rows.length == 0) {
+		ctx = 0;
+		tbl = [];
+	}else {
+		ctx = data.rows.length;
+		tbl = data.rows;
+		console.log(tbl);
+	}
+	basic(req, res, 'projectInfo', { ctx: ctx, tbl: tbl, templates: templates, moment: moment, project_msg: msg(req, 'add', 'Project loaded', 'Project does not exist'), auth: true });
+
+});
 }
 
 function register(req, res, next) {

@@ -23,6 +23,7 @@ function initRouter(app) {
 	app.get('/games'    , passport.authMiddleware(), games    );
 	app.get('/plays'    , passport.authMiddleware(), plays    );
 
+	app.get('/all_projects' , passport.authMiddleware(), allprojects );
 	app.get('/projects' , passport.authMiddleware(), projects );
 	
 	app.get('/register' , passport.antiMiddleware(), register );
@@ -165,9 +166,22 @@ function plays(req, res, next) {
 		});
 	});
 }
+function allprojects(req, res, next) {
+	var ctx = 0, avg = 0, tbl, templates;
+	pool.query(sql_query.query.all_projects, (err, data) => {
+		if(err || !data.rows || data.rows.length == 0) {
+			ctx = 0;
+			tbl = [];
+		} else {
+			ctx = data.rows.length;
+			tbl = data.rows;
+		}
+		basic(req, res, 'allprojects', { ctx: ctx, tbl: tbl, templates: templates, moment: moment, auth: true });
+	});
+}
 function projects(req, res, next) {
 	var ctx = 0, avg = 0, tbl, templates;
-	pool.query(sql_query.query.all_projects, [req.user.username], (err, data) => {
+	pool.query(sql_query.query.user_projects, [req.user.username], (err, data) => {
 		if(err || !data.rows || data.rows.length == 0) {
 			ctx = 0;
 			tbl = [];

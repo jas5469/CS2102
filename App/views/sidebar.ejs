@@ -7,8 +7,28 @@
 		</a>
 	</li>
 	<li class="nav-item">
+		<a class="nav-link <%= page==="allprojects" ? "active" : "" %>" href="<%= page==="allprojects" ? "#" : "/all_projects" %>">
+			<i class="fas fa-fw fa-copy"></i>
+			<span>Browse Projects</span></a>
+	</li>
+	<li class="nav-item">
+		<a class="nav-link <%= page==="creators" ? "active" : "" %>" href="<%= page==="creators" ? "#" : "/creators" %>">
+			<i class="fas fa-fw fa-users"></i>
+			<span>Browse Creators</span></a>
+	</li>
+	<li class="nav-item">
 		<a class="nav-link <%= page==="projects" ? "active" : "" %>" href="<%= page==="projects" ? "#" : "/projects" %>">
-			<i class="fas fa-fw fa-trophy"></i>
-			<span>Projects</span></a>
+			<i class="fas fa-fw fa-file"></i>
+			<span>Your Projects</span></a>
+	</li>
+	<li class="nav-item">
+		<a class="nav-link <%= page==="fundings" ? "active" : "" %>" href="<%= page==="fundings" ? "#" : "/fundings" %>">
+			<i class="fas fa-fw fa-hand-holding-usd"></i>
+			<span>Your Fundings</span></a>
+	</li>
+	<li class="nav-item">
+		<a class="nav-link <%= page==="projecttemplates" ? "active" : "" %>" href="<%= page==="projecttemplates" ? "#" : "/projecttemplates" %>">
+			<i class="fas fa-fw fa-bars"></i>
+			<span>Project Templates</span></a>
 	</li>
 </ul>

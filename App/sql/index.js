@@ -14,8 +14,10 @@ sql.query = {
 	all_games: 'SELECT ranking,game_list.gamename AS game,rating FROM user_games INNER JOIN game_list ON user_games.gamename=game_list.gamename WHERE username=$1 ORDER BY ranking ASC',
 	all_plays: 'SELECT gamename AS game, user1, user2, winner FROM game_plays WHERE user1=$1 OR user2=$1',
 	 
-	all_projects: 'SELECT * FROM projects WHERE cname=$1',
+
 	project_info: 'SELECT * FROM projects WHERE pname=$1',
+	all_projects: 'SELECT * FROM projects',
+	user_projects: 'SELECT * FROM projects WHERE cname=$1',
 	all_templates: 'SELECT * FROM projecttemplates',
 
 	// Insertion

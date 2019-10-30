@@ -26,7 +26,7 @@
 					
 					<div class="card mb-3">
 						<div class="card-header">
-							<i class="fas fa-trophy"></i> &nbsp; All Projects
+							<i class="fas fa-copy"></i> &nbsp; All Projects
 						</div>
 						<div class="card-body">
 							<div class="table-responsive">
@@ -46,7 +46,7 @@
 									<tbody>
 										<% for(var i=0; i<tbl.length; i++) { %>
 										<tr>
-											<td><%= tbl[i].pname%></td>
+											<td><a href="/projectInfo/<%= tbl[i].pname %>"><%= tbl[i].pname%></a></td>
 											<td><%= tbl[i].tname%></td>
 											<td><%= moment(tbl[i].e_date).format("DD/MM/YYYY")%></td>
 											<td><%= tbl[i].f_goal%></td>

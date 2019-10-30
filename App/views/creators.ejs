@@ -26,35 +26,18 @@
 					
 					<div class="card mb-3">
 						<div class="card-header">
-							<i class="fas fa-copy"></i> &nbsp; All Projects
+							<i class="fas fa-users"></i> &nbsp; All Creators
 						</div>
-						<div class="card-body">
-							<div class="table-responsive">
-								<table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
-									<thead>
-										<tr>
-											<th>Project Name</th>
-											<th>Category</th>
-											<th>End Date</th>
-											<th>Goal</th>
-										</tr>
-									</thead>
-									<tfoot>
-										<th colspan="3">Total:</th>
-										<th><i><%= ctx %></i></th>
-									</tfoot>
-									<tbody>
-										<% for(var i=0; i<tbl.length; i++) { %>
-										<tr>
-											<td><a href="/projectInfo/<%= tbl[i].pname %>"><%= tbl[i].pname%></a></td>
-											<td><%= tbl[i].tname%></td>
-											<td><%= moment(tbl[i].e_date).format("DD/MM/YYYY")%></td>
-											<td><%= tbl[i].f_goal%></td>
-										</tr>
-										<% } %>
-									</tbody>
-								</table>
+						<div class="card-body d-flex flex-wrap justify-content-between">
+							<% for(var i=0; i<tbl.length; i++) { %>
+							<div class="card mb-3" style="width: 32%">
+								<div class="card-body">
+									<h5 class="card-title"><%= tbl[i].cname%></h5>
+									<p class="card-text">Projects that user created, can be complex query</p>
+									<a href="#" class="btn btn-primary">Follow</a>
+								</div>
 							</div>
+							<% } %>
 						</div>
 					</div>
 				</div>

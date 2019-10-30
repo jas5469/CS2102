@@ -19,6 +19,7 @@ sql.query = {
 	all_projects: 'SELECT * FROM projects',
 	user_projects: 'SELECT * FROM projects WHERE cname=$1',
 	all_templates: 'SELECT * FROM projecttemplates',
+	all_creators: 'SELECT * FROM creators WHERE cname<>$1',
 
 	// Insertion
 	add_game: 'INSERT INTO user_games (username, gamename) VALUES($1,$2)',
@@ -26,6 +27,7 @@ sql.query = {
 	add_user: 'INSERT INTO Users (username, password, firstname, lastname, r_date) VALUES ($1,$2,$3,$4,$5)',
 
 	add_project: 'INSERT INTO Projects (pname, cname, tname, s_date, e_date, f_goal, description) VALUES ($1,$2,$3,$4,$5,$6,$7)',
+	add_template: 'INSERT INTO ProjectTemplates (tname, category, style, aname) VALUES ($1,$2,$3,$4)',
 	
 	// Login
 	userpass: 'SELECT * FROM Users WHERE username=$1',

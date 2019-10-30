@@ -25,11 +25,63 @@
         <div class="container-fluid">
             <%- include name.ejs %>
 
+            <div class="card mb-3">
+                <div class="card-header">
+                    <i class="fas fa-clipboard"></i> <%= tbl[0].pname%>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                            <thead>
+                            <tr>
+                                <th>Project Name</th>
+                                <th>Creator</th>
+                                <th>Category</th>
+                                <th>Start Date</th>
+                                <th>End Date</th>
+                                <th>Goal</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><%= tbl[0].pname%></td>
+                                    <td><%= tbl[0].cname%></td>
+                                    <td><%= tbl[0].tname%></td>
+                                    <td><%= moment(tbl[0].s_date).format("DD/MM/YYYY")%></td>
+                                    <td><%= moment(tbl[0].e_date).format("DD/MM/YYYY")%></td>
+                                    <td><%= tbl[0].f_goal%></td>
+                                </tr>
+                            <tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                            <thead>
+                            <tr>
+                                <th>Project Description</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr>
+                                <td><%= tbl[0].description%></td>
+                            </tr>
+                            <tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div>
+                        <button class="btn btn-secondary" style="float:right;width:100px"> Fund </button>
+                    </div>
+                </div>
+            </div>
+        </div>
 
 
 
         </div>
-    </div>
+
 </div>
 
 <%- include bottomscript.ejs %>

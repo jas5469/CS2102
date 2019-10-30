@@ -29,6 +29,7 @@ function initRouter(app) {
 	app.get('/projectInfo/:id' , passport.authMiddleware(), projectInfo);
 
 	app.get('/templates' , passport.authMiddleware(), templates );
+	app.get('/creators' , passport.authMiddleware(), creators );
 
 	app.get('/register' , passport.antiMiddleware(), register );
 	app.get('/password' , passport.antiMiddleware(), retrieve );
@@ -220,7 +221,7 @@ function projectInfo(req, res, next) {
 });
 }
 function templates(req, res, next) {
-	var ctx = 0, avg = 0, tbl, templates;
+	var ctx = 0, avg = 0, tbl;
 	pool.query(sql_query.query.all_templates, (err, data) => {
 		if(err || !data.rows || data.rows.length == 0) {
 			ctx = 0;
@@ -230,6 +231,19 @@ function templates(req, res, next) {
 			tbl = data.rows;
 		}
 		basic(req, res, 'templates', { ctx: ctx, tbl: tbl, template_msg: msg(req, 'add', 'Template added successfully', 'Template does not exist'), auth: true });
+	});
+}
+function creators(req, res, next) {
+	var ctx = 0, avg = 0, tbl;
+	pool.query(sql_query.query.all_creators, [req.user.username], (err, data) => {
+		if(err || !data.rows || data.rows.length == 0) {
+			ctx = 0;
+			tbl = [];
+		} else {
+			ctx = data.rows.length;
+			tbl = data.rows;
+		}
+		basic(req, res, 'creators', { ctx: ctx, tbl: tbl, template_msg: msg(req, 'add', 'Successfully followed creator', 'Not following creator'), auth: true });
 	});
 }
 

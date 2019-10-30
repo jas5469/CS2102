@@ -19,6 +19,7 @@ sql.query = {
 	all_projects: 'SELECT * FROM projects',
 	user_projects: 'SELECT * FROM projects WHERE cname=$1',
 	all_templates: 'SELECT * FROM projecttemplates',
+	all_creators: 'SELECT * FROM creators WHERE cname<>$1',
 
 	// Insertion
 	add_game: 'INSERT INTO user_games (username, gamename) VALUES($1,$2)',

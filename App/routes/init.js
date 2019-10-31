@@ -41,8 +41,8 @@ function initRouter(app) {
 	app.post('/add_play'   , passport.authMiddleware(), add_play   );
 
 	app.post('/add_project'   , passport.authMiddleware(), add_project   );
+	app.post('/add_fund'   , passport.authMiddleware(), add_fund);
 	app.post('/add_template'   , passport.authMiddleware(), add_template   );
-	
 	app.post('/reg_user'   , passport.antiMiddleware(), reg_user   );
 
 	/* LOGIN */
@@ -345,6 +345,25 @@ function add_template(req, res, next) {
 			res.redirect('/templates?add=pass');
 		}
 	});
+}
+
+function add_fund(req, res, next) {
+	var username = req.user.username;
+	var pname  = req.body.pname;
+	var tname  = req.body.tname;
+	var today = new Date();
+	var s_date = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate();
+	var e_date   = req.body.e_date;
+	var f_goal = req.body.f_goal;
+	var descr = req.body.descr;
+	pool.query(sql_query.query.add_project, [pname, username, tname, s_date, e_date, f_goal, descr], (err, data) => {
+		if(err) {
+			console.error("Error in adding project");
+			res.redirect('/projects?add=fail');
+		} else {
+			res.redirect('/projects?add=pass');
+}
+});
 }
 
 function reg_user(req, res, next) {

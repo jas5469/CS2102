@@ -28,6 +28,9 @@ function initRouter(app) {
 	app.get('/projectInfo' , passport.authMiddleware(), projectInfo);
 	app.get('/projectInfo/:id' , passport.authMiddleware(), projectInfo);
 
+	app.get('/templates' , passport.authMiddleware(), templates );
+	app.get('/creators' , passport.authMiddleware(), creators );
+
 	app.get('/register' , passport.antiMiddleware(), register );
 	app.get('/password' , passport.antiMiddleware(), retrieve );
 	
@@ -39,7 +42,7 @@ function initRouter(app) {
 
 	app.post('/add_project'   , passport.authMiddleware(), add_project   );
 	app.post('/add_fund'   , passport.authMiddleware(), add_fund);
-
+	app.post('/add_template'   , passport.authMiddleware(), add_template   );
 	app.post('/reg_user'   , passport.antiMiddleware(), reg_user   );
 
 	/* LOGIN */
@@ -217,6 +220,32 @@ function projectInfo(req, res, next) {
 
 });
 }
+function templates(req, res, next) {
+	var ctx = 0, avg = 0, tbl;
+	pool.query(sql_query.query.all_templates, (err, data) => {
+		if(err || !data.rows || data.rows.length == 0) {
+			ctx = 0;
+			tbl = [];
+		} else {
+			ctx = data.rows.length;
+			tbl = data.rows;
+		}
+		basic(req, res, 'templates', { ctx: ctx, tbl: tbl, template_msg: msg(req, 'add', 'Template added successfully', 'Template does not exist'), auth: true });
+	});
+}
+function creators(req, res, next) {
+	var ctx = 0, avg = 0, tbl;
+	pool.query(sql_query.query.all_creators, [req.user.username], (err, data) => {
+		if(err || !data.rows || data.rows.length == 0) {
+			ctx = 0;
+			tbl = [];
+		} else {
+			ctx = data.rows.length;
+			tbl = data.rows;
+		}
+		basic(req, res, 'creators', { ctx: ctx, tbl: tbl, template_msg: msg(req, 'add', 'Successfully followed creator', 'Not following creator'), auth: true });
+	});
+}
 
 function register(req, res, next) {
 	res.render('register', { page: 'register', auth: false });
@@ -299,6 +328,21 @@ function add_project(req, res, next) {
 			res.redirect('/projects?add=fail');
 		} else {
 			res.redirect('/projects?add=pass');
+		}
+	});
+}
+function add_template(req, res, next) {
+	var aname = req.user.username;
+	var tname  = req.body.tname;
+	var category  = req.body.category;
+	var style   = req.body.style;
+	pool.query(sql_query.query.add_template, [tname, category, style, aname], (err, data) => {
+		if(err) {
+			console.error("Error in adding project template");
+			console.error(err);
+			res.redirect('/templates?add=fail');
+		} else {
+			res.redirect('/templates?add=pass');
 		}
 	});
 }

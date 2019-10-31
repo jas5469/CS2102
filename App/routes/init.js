@@ -358,7 +358,7 @@ function add_fund(req, res, next) {
 	var descr = req.body.descr;
 	pool.query(sql_query.query.add_project, [pname, username, tname, s_date, e_date, f_goal, descr], (err, data) => {
 		if(err) {
-			console.error("Error in adding project");
+			console.error("Error in adding fund");
 			res.redirect('/projects?add=fail');
 		} else {
 			res.redirect('/projects?add=pass');

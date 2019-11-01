@@ -34,7 +34,9 @@
 								<div class="card-body">
 									<h5 class="card-title"><%= tbl[i].cname%></h5>
 									<p class="card-text">Projects that user created, can be complex query</p>
-									<a href="#" class="btn btn-primary">Follow</a>
+									<form action="/add_follower" method="post">
+									    <button class="btn btn-primary" type="submit" name="cname" value="<%= tbl[i].cname%>" id="<%= tbl[i].cname%>">Follow</button>
+									</form>
 								</div>
 							</div>
 							<% } %>
@@ -46,4 +48,14 @@
 		
 		<%- include bottomscript.ejs %>
   </body>
+  	<script>
+		<% follow_tbl.forEach(function(follow){ %>
+		    var follow_btn = document.getElementById("<%= follow.cname %>");
+	      	follow_btn.className = follow_btn.className.replace(/\bbtn-primary\b/g, "btn-success");
+	      	follow_btn.innerHTML = "Followed";
+
+	      	var form = follow_btn.parentElement;
+	      	form.setAttribute('action', "/delete_follower");
+	  	<% }) %>
+	</script>
 </html>

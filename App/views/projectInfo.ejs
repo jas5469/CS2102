@@ -14,6 +14,7 @@
 
     <!-- Custom styles for this template-->
     <link href="/stylesheets/index.css" rel="stylesheet">
+    <link rel="icon" href="/images/logo copy.png" type="image/x-icon">
 </head>
 <body id="page-top">
 <%- include navbar.ejs %>
@@ -72,9 +73,40 @@
                     </div>
 
                     <div>
-                        <form method="post" action="/add_fund">
-                            <button class="btn btn-secondary" style="float:right;width:100px"> Fund </button>
+                        <form method="post" action="/add_fund/<%= tbl[0].pname %>">
+                            <div  class="input-group">
+                                <div class="col-md-3"></div>
+                                <div class="col-md-3"></div>
+                                <div class="col-md-6">
+                                    <div class="input-group">
+                                        <input type="text" id="funding" class="form-control" placeholder="Amount to Fund" autofocus="autofocus" name="funding">
+                                        <span class="input-group-btn">
+                                               <button class="btn btn-secondary" type="submit">Fund</button>
+                                         </span>
+                                    </div>
+                                </div>
+                            </div>
+
                         </form>
+<!--                        <form method="post" action="/add_fund/<%= tbl[0].pname %>">-->
+<!--                            <div  class="input-group">-->
+<!--                                <div class="col-md-3"></div>-->
+<!--                                <div class="col-md-3"></div>-->
+<!--                                <div class="col-md-6">-->
+<!--                                    <div class="form-group row">-->
+<!--                                        <select name="tier" id="tier" class="form-control">-->
+<!--                                            <option value="">Select Tier To Fund</option>-->
+<!--                                            <% for(var i=0; i<tiers.length; i++) { %>-->
+<!--                                                <option value="<%= tiers[i].tname %>,<%=tiers[i].amount %>"><%= tiers[i].amount %> : <%= tiers[i].tname %> </option>-->
+<!--                                            <% } %>-->
+<!--                                        </select>-->
+<!--                                    </div>-->
+<!--                                    <div class="form-group-btn" style="float: right">-->
+<!--                                        <button class="btn btn-secondary" type="submit" style="width:200px">Fund</button>-->
+<!--                                    </div>-->
+<!--                                </div>-->
+<!--                            </div>-->
+<!--                        </form>-->
 
                     </div>
                 </div>

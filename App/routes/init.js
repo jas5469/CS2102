@@ -401,30 +401,6 @@ function add_template(req, res, next) {
 		}
 	});
 }
-
-async function get_tier(pname, funding) {
-    var tbl;
-    var tierName;
-    funding = parseFloat(funding);
-    pool.query(sql_query.query.get_tier, [pname], (err, data) => {
-        if(err || !data.rows || data.rows.length == 0) {
-        ctx = 0;
-        tbl = [];
-        console.log(tbl);
-    }else {
-        ctx = data.rows.length;
-        tbl = data.rows;
-        for (var i = 0, row; row = tbl[i]; i++) {
-            if(funding >= parseFloat(row.amount)) {
-                tierName = row.tname;
-            }
-        }
-        return tierName;
-    }
-});
-    return tierName;
-}
-
 function add_fund(req, res, next) {
 	var username = req.user.username;
 	var pname  = req.params.id;

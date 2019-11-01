@@ -30,6 +30,7 @@ function initRouter(app) {
 
 	app.get('/templates' , passport.authMiddleware(), templates );
 	app.get('/creators' , passport.authMiddleware(), creators );
+	app.get('/fundings' , passport.authMiddleware(), fundings );
 
 	app.get('/register' , passport.antiMiddleware(), register );
 	app.get('/password' , passport.antiMiddleware(), retrieve );
@@ -263,6 +264,19 @@ function creators(req, res, next) {
 		});
 	});
 }
+function fundings(req, res, next) {
+	var ctx = 0, avg = 0, tbl;
+	pool.query(sql_query.query.all_fundings, [req.user.username], (err, data) => {
+		if(err || !data.rows || data.rows.length == 0) {
+			ctx = 0;
+			tbl = [];
+		} else {
+			ctx = data.rows.length;
+			tbl = data.rows;
+		}
+		basic(req, res, 'fundings', { ctx: ctx, tbl: tbl, moment: moment, auth: true });
+	});
+}
 
 function register(req, res, next) {
 	res.render('register', { page: 'register', auth: false });
@@ -387,47 +401,29 @@ function add_template(req, res, next) {
 		}
 	});
 }
-
-async function get_tier(pname, funding) {
-    var tbl;
-    var tierName;
-    funding = parseFloat(funding);
-    pool.query(sql_query.query.get_tier, [pname], (err, data) => {
-        if(err || !data.rows || data.rows.length == 0) {
-        ctx = 0;
-        tbl = [];
-        console.log(tbl);
-    }else {
-        ctx = data.rows.length;
-        tbl = data.rows;
-        for (var i = 0, row; row = tbl[i]; i++) {
-            if(funding >= parseFloat(row.amount)) {
-                tierName = row.tname;
-            }
-        }
-        return tierName;
-    }
-});
-    return tierName;
-}
-
 function add_fund(req, res, next) {
 	var username = req.user.username;
 	var pname  = req.params.id;
 	var today = new Date();
 	var date = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate();
-	var funding = req.body.funding;
-	var tname  = get_tier(pname, funding);
+	var funding = parseInt(req.body.funding);
 	var status = "t";
-	console.log(tname);
-	pool.query(sql_query.query.add_fund, [pname, tname, username, date , funding , status  ], (err, data) => {
-		if(err) {
-			console.error("Error in adding fund");
-			res.redirect('/projects?add=fail');
-		} else {
-			res.redirect('/projects?add=pass');
-}
-});
+    pool.query(sql_query.query.get_tier, [pname, funding], (err, data) => {
+		if(err || !data.rows || data.rows.length == 0) {
+			console.error("Error in getting tier");
+			res.redirect('/projects');
+		}else {
+			tname = data.rows[0].tname;
+		}
+		pool.query(sql_query.query.add_fund, [pname, tname, username, date , funding , status  ], (err, data) => {
+			if(err) {
+				console.error("Error in adding fund");
+				res.redirect('/projects');
+			} else {
+				res.redirect('/fundings');
+			}
+		});
+	});
 }
 
 // function add_fund(req, res, next) {

@@ -21,7 +21,12 @@ sql.query = {
 	all_templates: 'SELECT * FROM projecttemplates',
 	all_creators: 'SELECT * FROM creators WHERE cname<>$1',
 	all_follows: 'SELECT cname FROM follows WHERE username=$1',
-	get_tier: 'SELECT * FROM FundingTiers WHERE pname=$1 ORDER BY amount ASC ',
+	all_fundings: 'SELECT * FROM fundings WHERE username=$1',
+	get_tier: 'SELECT tname \
+		FROM FundingTiers \
+		WHERE pname=$1 AND amount>=$2\
+		ORDER BY amount ASC\
+		LIMIT 1',
 
 	// Insertion
 	add_game: 'INSERT INTO user_games (username, gamename) VALUES($1,$2)',

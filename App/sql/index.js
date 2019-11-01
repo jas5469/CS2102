@@ -21,6 +21,7 @@ sql.query = {
 	all_templates: 'SELECT * FROM projecttemplates',
 	all_creators: 'SELECT * FROM creators WHERE cname<>$1',
 	all_follows: 'SELECT cname FROM follows WHERE username=$1',
+	get_tier: 'SELECT * FROM FundingTiers WHERE pname=$1 ORDER BY amount ASC ',
 
 	// Insertion
 	add_game: 'INSERT INTO user_games (username, gamename) VALUES($1,$2)',
@@ -28,6 +29,7 @@ sql.query = {
 	add_user: 'INSERT INTO Users (username, password, firstname, lastname, r_date) VALUES ($1,$2,$3,$4,$5)',
 
 	add_project: 'INSERT INTO Projects (pname, cname, tname, s_date, e_date, f_goal, description) VALUES ($1,$2,$3,$4,$5,$6,$7)',
+	add_fund: 'INSERT INTO Fundings (pname, tname , username, f_date, amount, status) VALUES($1,$2,$3,$4,$5,$6)',
 	add_template: 'INSERT INTO ProjectTemplates (tname, category, style, aname) VALUES ($1,$2,$3,$4)',
 	add_follower: 'INSERT INTO Follows (username, cname) VALUES ($1,$2)',
 	delete_follower: 'DELETE FROM Follows WHERE Username=$1 and cname=$2',

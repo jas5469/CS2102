@@ -27,6 +27,7 @@ sql.query = {
 		WHERE pname=$1 AND amount>=$2\
 		ORDER BY amount ASC\
 		LIMIT 1',
+    get_all_funds: 'SELECT SUM(amount) FROM Fundings WHERE pname=$1 AND status= $2 GROUP BY pname',
 
 	// Insertion
 	add_game: 'INSERT INTO user_games (username, gamename) VALUES($1,$2)',

@@ -71,6 +71,9 @@
                             </tbody>
                         </table>
                     </div>
+                    <form action="/like_project" method="post">
+                        <button class="btn btn-primary" type="submit" name="pname" value="<%= tbl[0].pname%>" id="<%= tbl[0].pname%>">Like</button>
+                    </form>
 
                     <div>
                         <form method="post" action="/add_fund/<%= tbl[0].pname %>">
@@ -121,4 +124,14 @@
 
 <%- include bottomscript.ejs %>
 </body>
+    <script>
+        <% tbl.forEach(function(like){ %>
+            var like_btn = document.getElementById("<%= like.pname %>");
+            like_btn.className = like_btn.className.replace(/\bbtn-primary\b/g, "btn-success");
+            like_btn.innerHTML = "Unlike";
+
+            var form = like_btn.parentElement;
+            form.setAttribute('action', "/unlike_project");
+        <% }) %>
+    </script>
 </html>

@@ -27,6 +27,7 @@ sql.query = {
 		WHERE pname=$1 AND amount>=$2\
 		ORDER BY amount ASC\
 		LIMIT 1',
+	all_liked: 'SELECT pname FROM Likes WHERE username=$1',
 
 	// Insertion
 	add_game: 'INSERT INTO user_games (username, gamename) VALUES($1,$2)',
@@ -38,6 +39,8 @@ sql.query = {
 	add_template: 'INSERT INTO ProjectTemplates (tname, category, style, aname) VALUES ($1,$2,$3,$4)',
 	add_follower: 'INSERT INTO Follows (username, cname) VALUES ($1,$2)',
 	delete_follower: 'DELETE FROM Follows WHERE Username=$1 and cname=$2',
+	like_project: 'INSERT INTO Likes (username, pname) VALUES ($1,$2)',
+	unlike_project: 'DELETE FROM Likes WHERE Username=$1 and pname=$2',
 	
 	// Login
 	userpass: 'SELECT * FROM Users WHERE username=$1',

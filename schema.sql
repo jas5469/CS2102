@@ -82,6 +82,14 @@ CREATE TABLE Follows (
     CHECK (username <> cname)
 );
 
+CREATE TABLE Likes (
+    username    VARCHAR(50),
+    pname       VARCHAR(100),
+    PRIMARY KEY (username, pname),
+    FOREIGN KEY (username) REFERENCES Users(username) ON DELETE CASCADE,
+    FOREIGN KEY (pname) REFERENCES Projects(pname) ON DELETE CASCADE
+);
+
 CREATE TABLE ProjectUpdates (
     pname         VARCHAR(50),
     u_date        date NOT NULL,

@@ -31,6 +31,7 @@ function initRouter(app) {
 	app.get('/templates' , passport.authMiddleware(), templates );
 	app.get('/creators' , passport.authMiddleware(), creators );
 	app.get('/fundings' , passport.authMiddleware(), fundings );
+	app.get('/likedprojects' , passport.authMiddleware(), likedprojects)
 
 	app.get('/register' , passport.antiMiddleware(), register );
 	app.get('/password' , passport.antiMiddleware(), retrieve );
@@ -49,6 +50,9 @@ function initRouter(app) {
 	app.post('/delete_follower'   , passport.authMiddleware(), delete_follower   );
 
 	app.post('/reg_user'   , passport.antiMiddleware(), reg_user   );
+
+	app.post('/like_project'   , passport.authMiddleware(), like_project   );
+	app.post('/unlike_project'   , passport.authMiddleware(), unlike_project   );
 
 	/* LOGIN */
 	app.post('/login', passport.authenticate('local', {
@@ -278,6 +282,21 @@ function fundings(req, res, next) {
 	});
 }
 
+function likedprojects(req, res, next) { 
+	var ctx = 0, avg = 0, tbl;
+	var username = req.user.username;
+	pool.query(sql_query.query.all_liked, [username], (err, data) => {
+		if(err || !data.rows || data.rows.length == 0) {
+			ctx = 0;
+			tbl = [];
+		} else {
+			ctx = data.rows.length;
+			tbl = data.rows;
+		}
+		basic(req, res, 'likedprojects', { ctx: ctx, tbl: tbl, auth: true });
+	});
+}
+
 function register(req, res, next) {
 	res.render('register', { page: 'register', auth: false });
 }
@@ -471,6 +490,30 @@ function reg_user(req, res, next) {
 	});
 }
 
+function like_project(req, res, next) {
+	var username = req.user.username;
+	var pname  = req.body.pname;
+	pool.query(sql_query.query.like_project, [username, pname], (err, data) => {
+		if(err) {
+			console.error("Error in liking project");
+			res.redirect('/projectInfo?like=fail');
+		} else {
+			res.redirect('/projectInfo?like=pass');
+		}
+	});
+}
+function unlike_project(req, res, next) {
+	var username = req.user.username;
+	var pname  = req.body.pname;
+	pool.query(sql_query.query.unlike_project, [username, pname], (err, data) => {
+		if(err) {
+			console.error("Error in unliking project");
+			res.redirect('/projectInfo?unlike=fail');
+		} else {
+			res.redirect('/projectInfo?unlike=pass');
+		}
+	});
+}
 
 // LOGOUT
 function logout(req, res, next) {

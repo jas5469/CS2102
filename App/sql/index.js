@@ -50,7 +50,7 @@ sql.query = {
 	update_pass: 'UPDATE username_password SET password=$2 WHERE username=$1',
 	
 	// Search
-	search_game: 'SELECT * FROM game_list WHERE lower(gamename) LIKE $1',
+	search_project: 'SELECT * FROM projects WHERE lower(pname) LIKE $1',
 }
 
 module.exports = sql

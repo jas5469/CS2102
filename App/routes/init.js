@@ -115,8 +115,9 @@ function index(req, res, next) {
 }
 function search(req, res, next) {
 	var ctx  = 0, avg = 0, tbl;
-	var game = "%" + req.query.gamename.toLowerCase() + "%";
-	pool.query(sql_query.query.search_game, [game], (err, data) => {
+	var pname = "%" + req.query.pname.toLowerCase() + "%";
+	var query = req.query.pname;
+	pool.query(sql_query.query.search_project, [pname], (err, data) => {
 		if(err || !data.rows || data.rows.length == 0) {
 			ctx = 0;
 			tbl = [];
@@ -127,7 +128,7 @@ function search(req, res, next) {
 		if(!req.isAuthenticated()) {
 			res.render('search', { page: 'search', auth: false, tbl: tbl, ctx: ctx });
 		} else {
-			basic(req, res, 'search', { page: 'search', auth: true, tbl: tbl, ctx: ctx });
+			basic(req, res, 'search', { page: 'search', auth: true, tbl: tbl, query: query, ctx: ctx });
 		}
 	});
 }

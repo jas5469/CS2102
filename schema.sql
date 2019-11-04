@@ -110,6 +110,40 @@ CREATE TABLE Fundings (
     FOREIGN KEY (username) REFERENCES Users(username) ON DELETE CASCADE
 );
 
+CREATE OR REPLACE FUNCTION remove_creator()
+RETURNS TRIGGER AS
+$$
+BEGIN
+    IF (OLD.cname IN (SELECT cname FROM Creators)) THEN
+        DELETE FROM Creators WHERE cname = OLD.cname;
+    END IF;
+    RETURN NEW;
+END;
+$$
+LANGUAGE plpgsql;
+
+CREATE TRIGGER remove_creator_trigger
+BEFORE DELETE ON Projects
+FOR EACH ROW
+EXECUTE PROCEDURE remove_creator();
+
+CREATE OR REPLACE FUNCTION add_creator()
+RETURNS TRIGGER AS
+$$
+BEGIN
+    IF (NEW.cname NOT IN (SELECT cname FROM Creators)) THEN
+        INSERT INTO Creators VALUES(NEW.cname);
+    END IF;
+    RETURN NEW;
+END;
+$$
+LANGUAGE plpgsql;
+
+CREATE TRIGGER add_creator_trigger
+BEFORE INSERT ON Projects
+FOR EACH ROW
+EXECUTE PROCEDURE add_creator();
+
 INSERT INTO Users VALUES ('UA','$2b$10$x6qys44jV5yi72aCxlDSm.cvT2FzCeBbTOSj3COxqP88m7KkWrCp2', 'test', 'test', DATE('2018-12-12'));
 INSERT INTO Users VALUES ('UB','$2b$10$x6qys44jV5yi72aCxlDSm.cvT2FzCeBbTOSj3COxqP88m7KkWrCp2', 'test', 'test', DATE('2018-12-12'));
 INSERT INTO Users VALUES ('UC','$2b$10$x6qys44jV5yi72aCxlDSm.cvT2FzCeBbTOSj3COxqP88m7KkWrCp2', 'test', 'test', DATE('2018-12-12'));
@@ -120,11 +154,6 @@ INSERT INTO Users VALUES ('CC','$2b$10$x6qys44jV5yi72aCxlDSm.cvT2FzCeBbTOSj3COxq
 INSERT INTO Users VALUES ('CD','$2b$10$x6qys44jV5yi72aCxlDSm.cvT2FzCeBbTOSj3COxqP88m7KkWrCp2', 'test', 'test', DATE('2018-12-12'));
 INSERT INTO Users VALUES ('AA','$2b$10$x6qys44jV5yi72aCxlDSm.cvT2FzCeBbTOSj3COxqP88m7KkWrCp2', 'test', 'test', DATE('2018-12-12'));
 INSERT INTO Users VALUES ('AB','$2b$10$x6qys44jV5yi72aCxlDSm.cvT2FzCeBbTOSj3COxqP88m7KkWrCp2', 'test', 'test', DATE('2018-12-12'));
-
-INSERT INTO Creators VALUES ('CA');
-INSERT INTO Creators VALUES ('CB');
-INSERT INTO Creators VALUES ('CC');
-INSERT INTO Creators VALUES ('CD');
 
 INSERT INTO Admins VALUES ('AA');
 INSERT INTO Admins VALUES ('AB');
@@ -182,6 +211,8 @@ INSERT INTO Fundings VALUES ('PB', 'T1', 'UD', DATE('2019-1-1'), 3000, TRUE);
 INSERT INTO Fundings VALUES ('PD', 'T1', 'UA', DATE('2019-1-1'), 3000, FALSE);
 INSERT INTO Fundings VALUES ('PA', 'T2', 'UD', DATE('2019-1-2'), 80, TRUE);
 INSERT INTO Fundings VALUES ('PB', 'T2', 'UC', DATE('2019-1-2'), 30, TRUE);
+
+
 
 
 

@@ -62,12 +62,12 @@
 						<div class="card-footer small text-muted"><span class="badge badge-pill badge-info"><%= template_msg %></span></div>
 					</div>
 					
-					<div class="card mb-3">
+					<div class="card mb-3" id="addtemplate">
 						<div class="card-header">
 							<i class="fas fa-plus-square"></i> &nbsp; Add Project Template
 						</div>
 						<form method="post" action="/add_template">
-							<div class="card-body">
+							<div class="card-body" >
 								<div class="form-group row">
 									<label for="username" class="col-sm-2 col-form-label"><b>Creator ID:</b></label>
 									<div class="col-sm-10">
@@ -102,4 +102,11 @@
 		
 		<%- include bottomscript.ejs %>
   </body>
+<script>
+	var toShow = <%=toShow%>;
+	if(toShow == false) {
+		$("#addtemplate").hide();
+	}
+
+</script>
 </html>

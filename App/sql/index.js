@@ -30,6 +30,7 @@ sql.query = {
     get_all_tiers: 'SELECT * FROM FundingTiers WHERE pname=$1',
     get_all_comments: 'SELECT * FROM comments WHERE pname=$1',
     get_all_funds: 'SELECT SUM(amount) FROM Fundings WHERE pname=$1 AND status= $2 GROUP BY pname',
+	get_if_admin: 'SELECT COUNT(*) FROM admins WHERE aname=$1 ',
 
 	// Insertion
 	add_game: 'INSERT INTO user_games (username, gamename) VALUES($1,$2)',

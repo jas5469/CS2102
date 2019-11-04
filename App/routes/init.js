@@ -280,10 +280,9 @@ function templates(req, res, next) {
 	}else
 	{
 		ifadmin = data.rows;
-		if(ifadmin[0].count == 1) {
+		if(ifadmin[0].count >= 1) {
 			toShow = true;
 		}
-		console.log(toShow);
 	}
 
 		basic(req, res, 'templates', { ctx: ctx, tbl: tbl, toShow: toShow, template_msg: msg(req, 'add', 'Template added successfully', 'User not allowed to add templates'), auth: true });

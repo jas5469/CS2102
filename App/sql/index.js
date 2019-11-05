@@ -31,6 +31,7 @@ sql.query = {
     get_all_comments: 'SELECT * FROM comments WHERE pname=$1',
     get_all_funds: 'SELECT SUM(amount) FROM Fundings WHERE pname=$1 AND status= $2 GROUP BY pname',
 	get_if_admin: 'SELECT COUNT(*) FROM admins WHERE aname=$1 ',
+	get_if_creator: 'SELECT COUNT(*) FROM Projects P JOIN Creators C  ON P.cname = C.cname WHERE P.pname=$1 AND P.cname=$2',
 	get_all_updates: 'SELECT * FROM ProjectUpdates WHERE pname=$1 ORDER BY u_date DESC ',
 
 	// Insertion
@@ -40,6 +41,7 @@ sql.query = {
 
 	add_project: 'INSERT INTO Projects (pname, cname, tname, s_date, e_date, f_goal, description) VALUES ($1,$2,$3,$4,$5,$6,$7)',
 	add_fund: 'INSERT INTO Fundings (pname, tname , username, f_date, amount, status) VALUES($1,$2,$3,$4,$5,$6)',
+	add_update: 'INSERT INTO ProjectUpdates (pname,u_date,descr) VALUES ($1,$2,$3)',
 	add_template: 'INSERT INTO ProjectTemplates (tname, style, aname) VALUES ($1,$2,$3)',
 	add_follower: 'INSERT INTO Follows (username, cname) VALUES ($1,$2)',
 	delete_follower: 'DELETE FROM Follows WHERE Username=$1 and cname=$2',

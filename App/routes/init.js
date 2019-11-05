@@ -43,6 +43,7 @@ function initRouter(app) {
 
 	app.post('/add_project'   , passport.authMiddleware(), add_project   );
 	app.post('/add_fund/:id'   , passport.authMiddleware(),add_fund);
+	app.post('/add_update/:id'   , passport.authMiddleware(),add_update);
 	app.post('/add_template'   , passport.authMiddleware(), add_template   );
 	app.post('/add_follower'   , passport.authMiddleware(), add_follower   );
 
@@ -211,9 +212,11 @@ function projects(req, res, next) {
 	});
 }
 function projectInfo(req, res, next) {
-	var ctx = 0, avg = 0, tbl, tiers, funds ,fundPercentage,alltiers,allcomments, allupdates;
+	var ctx = 0, avg = 0, tbl, tiers, funds ,fundPercentage,alltiers,allcomments, allupdates,getCreator;
+	var username = req.user.username;
 	var pname = req.params.id;
 	var status = "t";
+	var isCreator = false;
 	pool.query(sql_query.query.project_info, [pname], (err, data) => {
 		if(err || !data.rows || data.rows.length == 0) {
 		ctx = 0;
@@ -250,6 +253,16 @@ function projectInfo(req, res, next) {
 	{
 		allupdates = data.rows;
 	}
+	pool.query(sql_query.query.get_if_creator, [pname,username], (err, data) => {
+		if(err || !data.rows || data.rows.length == 0) {
+		getCreator = [];
+	}else
+	{
+		getCreator = data.rows;
+		if(getCreator[0].count >= 1) {
+			isCreator=true;
+		}
+	}
     pool.query(sql_query.query.get_all_funds, [pname, status], (err, data) => {
         if(err || !data.rows || data.rows.length == 0) {
         funds = [];
@@ -261,7 +274,8 @@ function projectInfo(req, res, next) {
 
 
 
-     basic(req, res, 'projectInfo', { ctx: ctx, tbl: tbl, tiers : tiers, funds: funds, fundPercentage: fundPercentage, alltiers: alltiers,allcomments: allcomments, allupdates: allupdates, moment: moment, project_msg: msg(req, 'add', 'Project loaded', 'Project does not exist'), auth: true });
+     basic(req, res, 'projectInfo', { ctx: ctx, tbl: tbl, tiers : tiers, funds: funds, fundPercentage: fundPercentage, alltiers: alltiers,allcomments: allcomments, allupdates: allupdates, isCreator: isCreator, moment: moment, project_msg: msg(req, 'add', 'Project loaded', 'Project does not exist'), auth: true });
+});
 });
 });
 });
@@ -476,6 +490,23 @@ function add_fund(req, res, next) {
 			}
 		});
 	});
+}
+
+function add_update(req, res, next) {
+	var username = req.user.username;
+	var pname  = req.params.id;
+	var today = new Date();
+	var date = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate();
+	var updates = req.body.descr;
+
+	pool.query(sql_query.query.add_update, [pname, date, updates ], (err, data) => {
+		if(err) {
+			console.error("Error in adding updates");
+			res.redirect('/projects');
+		} else {
+			res.redirect('/projectInfo/'+pname);
+	}
+});
 }
 
 // function add_fund(req, res, next) {

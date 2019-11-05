@@ -211,7 +211,7 @@ function projects(req, res, next) {
 	});
 }
 function projectInfo(req, res, next) {
-	var ctx = 0, avg = 0, tbl, tiers, funds ,fundPercentage,alltiers,allcomments;
+	var ctx = 0, avg = 0, tbl, tiers, funds ,fundPercentage,alltiers,allcomments, allupdates;
 	var pname = req.params.id;
 	var status = "t";
 	pool.query(sql_query.query.project_info, [pname], (err, data) => {
@@ -242,8 +242,14 @@ function projectInfo(req, res, next) {
     }else
     {
         allcomments = data.rows;
-        console.log(allcomments);
     }
+	pool.query(sql_query.query.get_all_updates, [pname], (err, data) => {
+		if(err || !data.rows || data.rows.length == 0) {
+		allupdates = [];
+	}else
+	{
+		allupdates = data.rows;
+	}
     pool.query(sql_query.query.get_all_funds, [pname, status], (err, data) => {
         if(err || !data.rows || data.rows.length == 0) {
         funds = [];
@@ -254,7 +260,9 @@ function projectInfo(req, res, next) {
     }
 
 
-     basic(req, res, 'projectInfo', { ctx: ctx, tbl: tbl, tiers : tiers, funds: funds, fundPercentage: fundPercentage, alltiers: alltiers,allcomments: allcomments, moment: moment, project_msg: msg(req, 'add', 'Project loaded', 'Project does not exist'), auth: true });
+
+     basic(req, res, 'projectInfo', { ctx: ctx, tbl: tbl, tiers : tiers, funds: funds, fundPercentage: fundPercentage, alltiers: alltiers,allcomments: allcomments, allupdates: allupdates, moment: moment, project_msg: msg(req, 'add', 'Project loaded', 'Project does not exist'), auth: true });
+});
 });
 });
 });

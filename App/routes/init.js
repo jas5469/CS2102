@@ -420,9 +420,8 @@ function delete_follower(req, res, next) {
 function add_template(req, res, next) {
 	var aname = req.user.username;
 	var tname  = req.body.tname;
-	var category  = req.body.category;
 	var style   = req.body.style;
-	pool.query(sql_query.query.add_template, [tname, category, style, aname], (err, data) => {
+	pool.query(sql_query.query.add_template, [tname, style, aname], (err, data) => {
 		if(err) {
 			console.error("Error in adding project template");
 			console.error(err);

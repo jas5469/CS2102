@@ -217,6 +217,7 @@ function projectInfo(req, res, next) {
 	var pname = req.params.id;
 	var status = "t";
 	var isCreator = false;
+	var fundOverGoal;
 	pool.query(sql_query.query.project_info, [pname], (err, data) => {
 		if(err || !data.rows || data.rows.length == 0) {
 		ctx = 0;
@@ -266,15 +267,18 @@ function projectInfo(req, res, next) {
     pool.query(sql_query.query.get_all_funds, [pname, status], (err, data) => {
         if(err || !data.rows || data.rows.length == 0) {
         funds = [];
+		fundOverGoal = "0 /" +  parseInt(tbl[0].f_goal);
     }else
     {
         funds = data.rows;
         fundPercentage = parseInt(funds[0].sum) / parseInt(tbl[0].f_goal) * 100;
+        fundOverGoal = (parseInt(funds[0].sum) + " / " + parseInt(tbl[0].f_goal));
+        console.log(fundOverGoal);
     }
 
 
 
-     basic(req, res, 'projectInfo', { ctx: ctx, tbl: tbl, tiers : tiers, funds: funds, fundPercentage: fundPercentage, alltiers: alltiers,allcomments: allcomments, allupdates: allupdates, isCreator: isCreator, moment: moment, project_msg: msg(req, 'add', 'Project loaded', 'Project does not exist'), auth: true });
+     basic(req, res, 'projectInfo', { ctx: ctx, tbl: tbl, tiers : tiers, funds: funds, fundPercentage: fundPercentage, fundOverGoal: fundOverGoal, alltiers: alltiers,allcomments: allcomments, allupdates: allupdates, isCreator: isCreator, moment: moment, project_msg: msg(req, 'add', 'Project loaded', 'Project does not exist'), auth: true });
 });
 });
 });

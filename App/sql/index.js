@@ -39,7 +39,7 @@ sql.query = {
 
 	add_project: 'INSERT INTO Projects (pname, cname, tname, s_date, e_date, f_goal, description) VALUES ($1,$2,$3,$4,$5,$6,$7)',
 	add_fund: 'INSERT INTO Fundings (pname, tname , username, f_date, amount, status) VALUES($1,$2,$3,$4,$5,$6)',
-	add_template: 'INSERT INTO ProjectTemplates (tname, category, style, aname) VALUES ($1,$2,$3,$4)',
+	add_template: 'INSERT INTO ProjectTemplates (tname, style, aname) VALUES ($1,$2,$3)',
 	add_follower: 'INSERT INTO Follows (username, cname) VALUES ($1,$2)',
 	delete_follower: 'DELETE FROM Follows WHERE Username=$1 and cname=$2',
 	

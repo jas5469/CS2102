@@ -33,7 +33,6 @@ CREATE TABLE Creators (
 
 CREATE TABLE ProjectTemplates (
     tname               VARCHAR(100),
-    category            VARCHAR(100) NOT NULL,
     style               TEXT,
     aname               VARCHAR(50) NOT NULL,
     PRIMARY KEY (tname),
@@ -158,16 +157,16 @@ INSERT INTO Users VALUES ('AB','$2b$10$x6qys44jV5yi72aCxlDSm.cvT2FzCeBbTOSj3COxq
 INSERT INTO Admins VALUES ('AA');
 INSERT INTO Admins VALUES ('AB');
 
-INSERT INTO ProjectTemplates VALUES ('TA', 'Music', 'Test', 'AA');
-INSERT INTO ProjectTemplates VALUES ('TB', 'Games', 'Test', 'AB');
-INSERT INTO ProjectTemplates VALUES ('TC', 'Books', 'Test', 'AB');
+INSERT INTO ProjectTemplates VALUES ('Music', 'Test', 'AA');
+INSERT INTO ProjectTemplates VALUES ('Games', 'Test', 'AB');
+INSERT INTO ProjectTemplates VALUES ('Books', 'Test', 'AB');
 
-INSERT INTO Projects VALUES ('PA', 'CA', 'TA', DATE('2019-1-1'), DATE('2019-12-30'), 300000, 'Test Description');
-INSERT INTO Projects VALUES ('PB', 'CA', 'TA', DATE('2019-1-1'), DATE('2019-12-30'), 5000, 'Test Description');
-INSERT INTO Projects VALUES ('PC', 'CB', 'TB', DATE('2019-1-1'), DATE('2019-12-30'), 1000, 'Test Description');
-INSERT INTO Projects VALUES ('PD', 'CC', 'TB', DATE('2019-1-1'), DATE('2019-12-30'), 28000, 'Test Description');
-INSERT INTO Projects VALUES ('PE', 'CD', 'TC', DATE('2019-1-1'), DATE('2019-12-30'), 25000, 'Test Description');
-INSERT INTO Projects VALUES ('PF', 'CA', 'TC', DATE('2019-1-1'), DATE('2019-12-30'), 680000, 'Test Description');
+INSERT INTO Projects VALUES ('PA', 'CA', 'Music', DATE('2019-1-1'), DATE('2019-12-30'), 300000, 'Test Description');
+INSERT INTO Projects VALUES ('PB', 'CA', 'Music', DATE('2019-1-1'), DATE('2019-12-30'), 5000, 'Test Description');
+INSERT INTO Projects VALUES ('PC', 'CB', 'Games', DATE('2019-1-1'), DATE('2019-12-30'), 1000, 'Test Description');
+INSERT INTO Projects VALUES ('PD', 'CC', 'Games', DATE('2019-1-1'), DATE('2019-12-30'), 28000, 'Test Description');
+INSERT INTO Projects VALUES ('PE', 'CD', 'Books', DATE('2019-1-1'), DATE('2019-12-30'), 25000, 'Test Description');
+INSERT INTO Projects VALUES ('PF', 'CA', 'Books', DATE('2019-1-1'), DATE('2019-12-30'), 680000, 'Test Description');
 
 INSERT INTO Comments VALUES ('UA', 'PA', DATE('2019-1-1'), 'This project is great!');
 INSERT INTO Comments VALUES ('UB', 'PB', DATE('2019-1-1'), 'This project is amazing!');

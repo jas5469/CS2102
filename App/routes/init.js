@@ -263,7 +263,9 @@ function projectInfo(req, res, next) {
 }
 
 function templates(req, res, next) {
-	var ctx = 0, avg = 0, tbl;
+	var ctx = 0, avg = 0, tbl,ifadmin;
+	var username = req.user.username;
+	var toShow = false;
 	pool.query(sql_query.query.all_templates, (err, data) => {
 		if(err || !data.rows || data.rows.length == 0) {
 			ctx = 0;
@@ -272,8 +274,20 @@ function templates(req, res, next) {
 			ctx = data.rows.length;
 			tbl = data.rows;
 		}
-		basic(req, res, 'templates', { ctx: ctx, tbl: tbl, template_msg: msg(req, 'add', 'Template added successfully', 'Template does not exist'), auth: true });
+	pool.query(sql_query.query.get_if_admin, [username], (err, data) => {
+		if(err || !data.rows || data.rows.length == 0) {
+		ifadmin = [];
+	}else
+	{
+		ifadmin = data.rows;
+		if(ifadmin[0].count >= 1) {
+			toShow = true;
+		}
+	}
+
+		basic(req, res, 'templates', { ctx: ctx, tbl: tbl, toShow: toShow, template_msg: msg(req, 'add', 'Template added successfully', 'User not allowed to add templates'), auth: true });
 	});
+});
 }
 function creators(req, res, next) {
 	var ctx = 0, avg = 0, tbl, follow_tbl;

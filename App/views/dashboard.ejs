@@ -28,60 +28,56 @@
 					
 					<div class="card mb-3">
 						<div class="card-header">
-							<i class="fas fa-address-card"></i> &nbsp; Basic Information
+							<i class="fas fa-dollar-sign"></i> &nbsp; Highest Funded Project by Category
 						</div>
-						<form method="post" action="/update_info">
-							<div class="card-body">
-								<div class="form-group row">
-									<label for="username" class="col-sm-2 col-form-label"><b>User ID:</b></label>
-									<div class="col-sm-4">
-										<input type="text" required="required" readonly class="form-control-plaintext" id="username" value="<%= username %>" name="username">
-									</div>
-									<label for="rdate" class="col-sm-2 col-form-label"><b>Registration Date:</b></label>
-									<div class="col-sm-4">
-										<input type="text" required="required" readonly class="form-control-plaintext" id="rdate" value="<%= rdate %>" name="rdate">
-									</div>
-								</div>
-								<div class="form-group row">
-									<label for="firstname" class="col-sm-2 col-form-label"><b>First:</b></label>
-									<div class="col-sm-4">
-										<input type="text" required="required" class="form-control" id="firstname" placeholder="First Name" name="firstname" value="<%= firstname %>">
-									</div>
-									<label for="lastname" class="col-sm-2 col-form-label"><b>Last:</b></label>
-									<div class="col-sm-4">
-										<input type="text" required="required" class="form-control" id="lastname" placeholder="Last Name" name="lastname" value="<%= lastname %>">
-									</div>
-								</div>
+						<div class="card-body">
+							<div class="table-responsive">
+								<table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+									<thead>
+										<tr>
+											<th>Category</th>
+											<th>Project Name</th>
+											<th>Total Funding</th>
+										</tr>
+									</thead>
+									<tbody>
+										<% for(var i=0; i<tbl.length; i++) { %>
+										<tr>
+											<td><%= tbl[i].tname%></td>
+											<td><a href="/projectInfo/<%= tbl[i].pname %>"><%= tbl[i].pname%></a></td>
+											<td><%= tbl[i].total%></td>
+										</tr>
+										<% } %>
+									</tbody>
+								</table>
 							</div>
-							<div class="card-footer small text-muted"><button type="submit" class="btn btn-secondary">Update Info</button> &nbsp;&nbsp;&nbsp; <span class="badge badge-pill badge-info"><%= info_msg %></span></div>
-						</form>
+						</div>
 					</div>
 					
 					<div class="card mb-3">
 						<div class="card-header">
-							<i class="fas fa-key"></i> &nbsp; Password: <i>must be at least 8 characters</i>
+							<i class="fas fa-bullseye"></i> &nbsp; Projects Closest to Goal
 						</div>
-						<form method="post" action="/update_pass">
-							<div class="card-body">
-								<div class="form-group row">
-									<label for="username" class="col-sm-2 col-form-label"><b>User ID:</b></label>
-									<div class="col-sm-4">
-										<input type="text" required="required" readonly class="form-control-plaintext" id="username" value="<%= username %>" name="username">
-									</div>
-									<label for="rdate" class="col-sm-2 col-form-label"><b>Registration Date:</b></label>
-									<div class="col-sm-4">
-										<input type="text" required="required" readonly class="form-control-plaintext" id="rdate" value="<%= rdate %>" name="rdate">
-									</div>
-								</div>
-								<div class="form-group row">
-									<label for="password" class="col-sm-2 col-form-label"><b>Password:</b></label>
-									<div class="col-sm-10">
-										<input type="password" required="required" class="form-control" id="password" placeholder="Your new password" name="password" pattern=".{8,}" />
-									</div>
-								</div>
+						<div class="card-body">
+							<div class="table-responsive">
+								<table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+									<thead>
+										<tr>
+											<th>Project Name</th>
+											<th>Amount to Goal</th>
+										</tr>
+									</thead>
+									<tbody>
+										<% for(var i=0; i<tbl2.length; i++) { %>
+										<tr>
+											<td><a href="/projectInfo/<%= tbl2[i].pname %>"><%= tbl2[i].pname%></a></td>
+											<td><%= tbl2[i].amount%></td>
+										</tr>
+										<% } %>
+									</tbody>
+								</table>
 							</div>
-							<div class="card-footer small text-muted"><button type="submit" class="btn btn-secondary">Update Password</button> &nbsp;&nbsp;&nbsp; <span class="badge badge-pill badge-info"><%= pass_msg %></span></div>
-						</form>
+						</div>
 					</div>
 				</div>
 			</div>

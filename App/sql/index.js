@@ -55,6 +55,35 @@ sql.query = {
 	
 	// Search
 	search_project: 'SELECT * FROM projects WHERE lower(pname) LIKE $1',
+
+	// Rank
+	rank_highest_funded_by_category: 'SELECT p1.tname, p1.pname, SUM(amount) as total\
+		FROM Projects p1, Fundings f \
+		WHERE p1.pname = f.pname \
+		GROUP BY p1.tname, p1.pname \
+		HAVING SUM(amount) =  \
+			(SELECT MAX(sum) \
+			FROM  \
+				(SELECT p.pname, p.tname, SUM(amount) as sum  \
+				FROM projects p, fundings f  \
+				WHERE p.pname = f.pname  \
+				AND f.status = true \
+				GROUP BY p.pname) total \
+			WHERE total.tname = p1.tname)',
+	rank_closest_goal: 'SELECT p.pname, sum.amount \
+		FROM Projects p LEFT JOIN ( \
+			SELECT p.pname, p.f_goal-  \
+				(CASE \
+					WHEN SUM(f.amount) IS NULL THEN 0 \
+					ELSE SUM(f.amount) \
+				END) AS amount \
+			FROM Projects p LEFT JOIN Fundings f \
+			ON p.pname = f.pname \
+			GROUP BY p.pname) sum \
+		ON p.pname = sum.pname \
+		WHERE sum.amount > 0 \
+		ORDER BY amount \
+		LIMIT 10'
 }
 
 module.exports = sql

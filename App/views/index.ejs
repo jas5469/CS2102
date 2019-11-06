@@ -49,7 +49,7 @@
 							<tbody>
 							<% for(var i=0; i<tbl.length; i++) { %>
 								<tr>
-									<td><%= i+1 %></td>
+									<td><%= i+offset + 1 %></td>
 									<td>
 <!--										<a class="nav-link <%= page==="projectInfo" ? "active" : "" %>" href="<%= page==="projectInfo" ? "#" : "/projectInfo" %>" value="<%= tbl[i].pname %>" name="pname"><%= tbl[i].pname%>-->
 										<a href="/projectInfo/<%= tbl[i].pname %>"> <%= tbl[i].pname %></a>

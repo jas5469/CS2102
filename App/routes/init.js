@@ -94,13 +94,14 @@ function index(req, res, next) {
 	if(Object.keys(req.query).length > 0 && req.query.p) {
 		idx = req.query.p-1;
 	}
-	pool.query(sql_query.query.page_lims, (err, data) => {
+	var offset = idx * 10;
+	pool.query(sql_query.query.page_lims, [offset], (err, data) => {
 		if(err || !data.rows || data.rows.length == 0) {
 			tbl = [];
 		} else {
 			tbl = data.rows;
 		}
-		pool.query(sql_query.query.ctx_games, (err, data) => {
+		pool.query(sql_query.query.ctx_projects, (err, data) => {
 			if(err || !data.rows || data.rows.length == 0) {
 				ctx = 0;
 			} else {
@@ -109,9 +110,9 @@ function index(req, res, next) {
 			total = ctx%10 == 0 ? ctx/10 : (ctx - (ctx%10))/10 + 1;
 			console.log(idx*10, idx*10+10, total);
 			if(!req.isAuthenticated()) {
-				res.render('index', { page: '', auth: false, tbl: tbl, ctx: ctx, p: idx+1, t: total });
+				res.render('index', { page: '', auth: false, tbl: tbl, offset: offset, ctx: ctx, p: idx+1, t: total });
 			} else {
-				basic(req, res, 'index', { page: '', auth: true, tbl: tbl, ctx: ctx, p: idx+1, t: total });
+				basic(req, res, 'index', { page: '', auth: true, tbl: tbl, offset: offset, ctx: ctx, p: idx+1, t: total });
 			}
 		});
 	});
@@ -203,16 +204,31 @@ function plays(req, res, next) {
 	});
 }
 function allprojects(req, res, next) {
-	var ctx = 0, avg = 0, tbl, templates;
-	pool.query(sql_query.query.all_projects, (err, data) => {
+	var ctx = 0, idx = 0, tbl, t,total;
+	if(Object.keys(req.query).length > 0 && req.query.p) {
+		idx = req.query.p-1;
+	}
+	var offset = idx * 10;
+	pool.query(sql_query.query.page_lims, [offset], (err, data) => {
 		if(err || !data.rows || data.rows.length == 0) {
 			ctx = 0;
 			tbl = [];
 		} else {
 			ctx = data.rows.length;
 			tbl = data.rows;
-		}
-		basic(req, res, 'allprojects', { ctx: ctx, tbl: tbl, templates: templates, moment: moment, auth: true });
+		}		pool.query(sql_query.query.ctx_projects, (err, data) => {
+		if(err || !data.rows || data.rows.length == 0) {
+		ctx = 0;
+	} else {
+		ctx = data.rows[0].count;
+	}
+	total = ctx%10 == 0 ? ctx/10 : (ctx - (ctx%10))/10 + 1;
+	if(!req.isAuthenticated()) {
+		res.render('index', { page: '', auth: false, tbl: tbl, offset: offset, ctx: ctx, p: idx+1, t: total });
+	} else {
+		basic(req, res, 'allprojects', { auth: true, tbl: tbl, offset: offset, ctx: ctx, p: idx+1, t: total ,moment: moment, });
+	}
+});
 	});
 }
 function projects(req, res, next) {

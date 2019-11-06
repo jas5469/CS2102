@@ -9,8 +9,8 @@ sql.query = {
 	// Information
 	page_game: 'SELECT * FROM game_list WHERE ranking >= $1 AND ranking <= $2 ORDER BY ranking ASC',
 	//page_lims: 'SELECT * FROM game_list ORDER BY ranking ASC LIMIT 10 OFFSET $1',
-	page_lims: 'SELECT * FROM projects ',
-	ctx_games: 'SELECT COUNT(*) FROM projects',
+	page_lims: 'SELECT * FROM projects OFFSET $1 LIMIT 10',
+	ctx_projects: 'SELECT COUNT(*) FROM projects',
 	all_games: 'SELECT ranking,game_list.gamename AS game,rating FROM user_games INNER JOIN game_list ON user_games.gamename=game_list.gamename WHERE username=$1 ORDER BY ranking ASC',
 	all_plays: 'SELECT gamename AS game, user1, user2, winner FROM game_plays WHERE user1=$1 OR user2=$1',
 	 

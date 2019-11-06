@@ -14,6 +14,7 @@
 
     <!-- Custom styles for this template-->
     <link href="/stylesheets/index.css" rel="stylesheet">
+    <link rel="icon" href="/images/logo copy.png" type="image/x-icon">
 </head>
 <body id="page-top">
     <%- include navbar.ejs %>
@@ -32,7 +33,9 @@
                         <% for(var i=0; i<likes.length; i++) { %>
                         <div class="card mb-3" style="width: 32%">
                             <div class="card-body">
-                                <h5 class="card-title"><%= likes[i].pname%></h5>
+                                <h5 class="card-title">
+                                    <a href="/projectInfo/<%= likes[i].pname %>"><%= likes[i].pname%> </a>
+                                </h5>
                             </div>
                         </div>
                         <% } %>

@@ -9,6 +9,7 @@ DROP TABLE IF EXISTS ProjectTemplates CASCADE;
 DROP TABLE IF EXISTS Creators CASCADE;
 DROP TABLE IF EXISTS Admins CASCADE;
 DROP TABLE IF EXISTS Users CASCADE;
+DROP TABLE IF EXISTS Likes CASCADE;
 
 CREATE TABLE Users (
     username        VARCHAR(50),
@@ -79,6 +80,14 @@ CREATE TABLE Follows (
     FOREIGN KEY (username) REFERENCES Users(username) ON DELETE CASCADE,
     FOREIGN KEY (cname) REFERENCES Creators(cname) ON DELETE CASCADE,
     CHECK (username <> cname)
+);
+
+CREATE TABLE Likes (
+    username    VARCHAR(50),
+    pname       VARCHAR(100),
+    PRIMARY KEY (username, pname),
+    FOREIGN KEY (username) REFERENCES Users(username) ON DELETE CASCADE,
+    FOREIGN KEY (pname) REFERENCES Projects(pname) ON DELETE CASCADE
 );
 
 CREATE TABLE ProjectUpdates (

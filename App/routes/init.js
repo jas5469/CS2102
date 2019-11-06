@@ -19,6 +19,8 @@ function initRouter(app) {
 	app.get('/search', search);
 
 	/* PROTECTED GET */
+	app.get('/profile', passport.authMiddleware(), profile);
+
 	app.get('/dashboard', passport.authMiddleware(), dashboard);
 	app.get('/games', passport.authMiddleware(), games);
 	app.get('/plays', passport.authMiddleware(), plays);
@@ -43,12 +45,13 @@ function initRouter(app) {
 	app.post('/add_game', passport.authMiddleware(), add_game);
 	app.post('/add_play', passport.authMiddleware(), add_play);
 
-	app.post('/add_project', passport.authMiddleware(), add_project);
-	app.post('/add_fund/:id', passport.authMiddleware(), add_fund);
-	app.post('/add_template', passport.authMiddleware(), add_template);
-	app.post('/add_follower', passport.authMiddleware(), add_follower);
-
-	app.post('/delete_follower', passport.authMiddleware(), delete_follower);
+	app.post('/add_project'   , passport.authMiddleware(), add_project   );
+	app.post('/add_fund/:id'   , passport.authMiddleware(),add_fund);
+	app.post('/add_update/:id'   , passport.authMiddleware(),add_update);
+	app.post('/add_template'   , passport.authMiddleware(), add_template   );
+	
+	app.post('/add_follower'   , passport.authMiddleware(), add_follower   );
+	app.post('/delete_follower'   , passport.authMiddleware(), delete_follower   );
 
 	app.post('/reg_user', passport.antiMiddleware(), reg_user);
 
@@ -96,33 +99,35 @@ function index(req, res, next) {
 	if (Object.keys(req.query).length > 0 && req.query.p) {
 		idx = req.query.p - 1;
 	}
-	pool.query(sql_query.query.page_lims, (err, data) => {
-		if (err || !data.rows || data.rows.length == 0) {
+	var offset = idx * 10;
+	pool.query(sql_query.query.page_lims, [offset], (err, data) => {
+		if(err || !data.rows || data.rows.length == 0) {
 			tbl = [];
 		} else {
 			tbl = data.rows;
 		}
-		pool.query(sql_query.query.ctx_games, (err, data) => {
-			if (err || !data.rows || data.rows.length == 0) {
+		pool.query(sql_query.query.ctx_projects, (err, data) => {
+			if(err || !data.rows || data.rows.length == 0) {
 				ctx = 0;
 			} else {
 				ctx = data.rows[0].count;
 			}
-			total = ctx % 10 == 0 ? ctx / 10 : (ctx - (ctx % 10)) / 10 + 1;
-			console.log(idx * 10, idx * 10 + 10, total);
-			if (!req.isAuthenticated()) {
-				res.render('index', { page: '', auth: false, tbl: tbl, ctx: ctx, p: idx + 1, t: total });
+			total = ctx%10 == 0 ? ctx/10 : (ctx - (ctx%10))/10 + 1;
+			console.log(idx*10, idx*10+10, total);
+			if(!req.isAuthenticated()) {
+				res.render('index', { page: '', auth: false, tbl: tbl, offset: offset, ctx: ctx, p: idx+1, t: total });
 			} else {
-				basic(req, res, 'index', { page: '', auth: true, tbl: tbl, ctx: ctx, p: idx + 1, t: total });
+				basic(req, res, 'index', { page: '', auth: true, tbl: tbl, offset: offset, ctx: ctx, p: idx+1, t: total });
 			}
 		});
 	});
 }
 function search(req, res, next) {
-	var ctx = 0, avg = 0, tbl;
-	var game = "%" + req.query.gamename.toLowerCase() + "%";
-	pool.query(sql_query.query.search_game, [game], (err, data) => {
-		if (err || !data.rows || data.rows.length == 0) {
+	var ctx  = 0, avg = 0, tbl;
+	var pname = "%" + req.query.pname.toLowerCase() + "%";
+	var query = req.query.pname;
+	pool.query(sql_query.query.search_project, [pname], (err, data) => {
+		if(err || !data.rows || data.rows.length == 0) {
 			ctx = 0;
 			tbl = [];
 		} else {
@@ -132,12 +137,34 @@ function search(req, res, next) {
 		if (!req.isAuthenticated()) {
 			res.render('search', { page: 'search', auth: false, tbl: tbl, ctx: ctx });
 		} else {
-			basic(req, res, 'search', { page: 'search', auth: true, tbl: tbl, ctx: ctx });
+			basic(req, res, 'search', { page: 'search', auth: true, tbl: tbl, query: query, ctx: ctx });
 		}
 	});
 }
+function profile(req, res, next) {
+	basic(req, res, 'profile', { info_msg: msg(req, 'info', 'Information updated successfully', 'Error in updating information'), pass_msg: msg(req, 'pass', 'Password updated successfully', 'Error in updating password'), auth: true });
+}
 function dashboard(req, res, next) {
-	basic(req, res, 'dashboard', { info_msg: msg(req, 'info', 'Information updated successfully', 'Error in updating information'), pass_msg: msg(req, 'pass', 'Password updated successfully', 'Error in updating password'), auth: true });
+	var ctx = 0, avg = 0, tbl, tbl2;
+	pool.query(sql_query.query.rank_highest_funded_by_category, (err, data) => {
+		if(err || !data.rows || data.rows.length == 0) {
+			ctx = 0;
+			tbl = [];
+		} else {
+			ctx = data.rows.length;
+			tbl = data.rows;
+		}
+		pool.query(sql_query.query.rank_closest_goal, (err, data) => {
+			if(err || !data.rows || data.rows.length == 0) {
+				ctx = 0;
+				tbl2 = [];
+			} else {
+				ctx = data.rows.length;
+				tbl2 = data.rows;
+			}
+			basic(req, res, 'dashboard', { tbl: tbl, tbl2: tbl2, auth: true });
+		});
+	});
 }
 function games(req, res, next) {
 	var ctx = 0, avg = 0, tbl;
@@ -182,16 +209,31 @@ function plays(req, res, next) {
 	});
 }
 function allprojects(req, res, next) {
-	var ctx = 0, avg = 0, tbl, templates;
-	pool.query(sql_query.query.all_projects, (err, data) => {
-		if (err || !data.rows || data.rows.length == 0) {
+	var ctx = 0, idx = 0, tbl, t,total;
+	if(Object.keys(req.query).length > 0 && req.query.p) {
+		idx = req.query.p-1;
+	}
+	var offset = idx * 10;
+	pool.query(sql_query.query.page_lims, [offset], (err, data) => {
+		if(err || !data.rows || data.rows.length == 0) {
 			ctx = 0;
 			tbl = [];
 		} else {
 			ctx = data.rows.length;
 			tbl = data.rows;
-		}
-		basic(req, res, 'allprojects', { ctx: ctx, tbl: tbl, templates: templates, moment: moment, auth: true });
+		}		pool.query(sql_query.query.ctx_projects, (err, data) => {
+		if(err || !data.rows || data.rows.length == 0) {
+		ctx = 0;
+	} else {
+		ctx = data.rows[0].count;
+	}
+	total = ctx%10 == 0 ? ctx/10 : (ctx - (ctx%10))/10 + 1;
+	if(!req.isAuthenticated()) {
+		res.render('index', { page: '', auth: false, tbl: tbl, offset: offset, ctx: ctx, p: idx+1, t: total });
+	} else {
+		basic(req, res, 'allprojects', { auth: true, tbl: tbl, offset: offset, ctx: ctx, p: idx+1, t: total ,moment: moment, });
+	}
+});
 	});
 }
 function projects(req, res, next) {
@@ -215,42 +257,99 @@ function projects(req, res, next) {
 	});
 }
 function projectInfo(req, res, next) {
-	var ctx = 0, avg = 0, tbl, tiers, likes;
-	var pname = req.params.id;
+	var ctx = 0, avg = 0, tbl, tiers, funds ,fundPercentage,alltiers,allcomments, allupdates,getCreator, likes;
 	var username = req.user.username;
-    function isLiked(name, liked_projects) {
+	var pname = req.params.id;
+	var status = "t";
+	var isCreator = false;
+	var fundOverGoal;
+	function isLiked(name, liked_projects) {
 		for (var i=0; i<liked_projects.length; i++) {
 			if (liked_projects[i].pname === name) return true
 		}
 		return false
     }
 	pool.query(sql_query.query.project_info, [pname], (err, data) => {
-		if (err || !data.rows || data.rows.length == 0) {
-			ctx = 0;
-			tbl = [];
-		} else {
-			ctx = data.rows.length;
-			tbl = data.rows;
+		if(err || !data.rows || data.rows.length == 0) {
+		ctx = 0;
+		tbl = [];
+	}else {
+		ctx = data.rows.length;
+		tbl = data.rows;
+	}
+    pool.query(sql_query.query.get_tier, [pname], (err, data) => {
+        if(err || !data.rows || data.rows.length == 0) {
+        tiers = [];
+    }else
+    {
+        tiers = data.rows;
+    }
+    pool.query(sql_query.query.get_all_tiers, [pname], (err, data) => {
+        if(err || !data.rows || data.rows.length == 0) {
+        alltiers = [];
+    }else
+    {
+        alltiers = data.rows;
+    }
+    pool.query(sql_query.query.get_all_comments, [pname], (err, data) => {
+        if(err || !data.rows || data.rows.length == 0) {
+        allcomments = [];
+    }else
+    {
+        allcomments = data.rows;
+    }
+	pool.query(sql_query.query.get_all_updates, [pname], (err, data) => {
+		if(err || !data.rows || data.rows.length == 0) {
+		allupdates = [];
+	}else
+	{
+		allupdates = data.rows;
+	}
+	pool.query(sql_query.query.get_if_creator, [pname,username], (err, data) => {
+		if(err || !data.rows || data.rows.length == 0) {
+		getCreator = [];
+	}else
+	{
+		getCreator = data.rows;
+		if(getCreator[0].count >= 1) {
+			isCreator=true;
 		}
-		pool.query(sql_query.query.get_tier, [pname], (err, data) => {
-			if (err || !data.rows || data.rows.length == 0) {
-				tiers = [];
-			} else {
-				tiers = data.rows;
-			}
-			pool.query(sql_query.query.all_liked, [username], (err, data) => {
-				if (err || !data.rows || data.rows.length === 0) {
-					likes = [];
-				} else {
-					likes = data.rows;
-				}
-				basic(req, res, 'projectInfo', { isLiked: isLiked, ctx: ctx, tbl: tbl, tiers: tiers, likes: likes, moment: moment, project_msg: msg(req, 'add', 'Project loaded', 'Project does not exist'), auth: true });
-			})
-		});
-	});
+	}
+    pool.query(sql_query.query.get_all_funds, [pname, status], (err, data) => {
+        if(err || !data.rows || data.rows.length == 0) {
+        funds = [];
+		fundOverGoal = "0 /" +  parseInt(tbl[0].f_goal);
+    }else
+    {
+        funds = data.rows;
+        fundPercentage = parseInt(funds[0].sum) / parseInt(tbl[0].f_goal) * 100;
+        fundOverGoal = (parseInt(funds[0].sum) + " / " + parseInt(tbl[0].f_goal));
+        console.log(fundOverGoal);
+	}
+	pool.query(sql_query.query.all_liked, [username], (err, data) => {
+		if (err || !data.rows || data.rows.length === 0) {
+			likes = [];
+		} else {
+			likes = data.rows;
+		}
+
+
+
+    basic(req, res, 'projectInfo', { ctx: ctx, tbl: tbl, isLiked : isLiked, likes : likes, tiers : tiers, funds: funds, fundPercentage: fundPercentage, fundOverGoal: fundOverGoal, alltiers: alltiers,allcomments: allcomments, allupdates: allupdates, isCreator: isCreator, moment: moment, project_msg: msg(req, 'add', 'Project loaded', 'Project does not exist'), auth: true });
+});
+});
+});
+});
+});
+});
+});
+});
 }
+
 function templates(req, res, next) {
-	var ctx = 0, avg = 0, tbl;
+	var ctx = 0, avg = 0, tbl,ifadmin;
+	var username = req.user.username;
+	var toShow = false;
 	pool.query(sql_query.query.all_templates, (err, data) => {
 		if (err || !data.rows || data.rows.length == 0) {
 			ctx = 0;
@@ -259,8 +358,20 @@ function templates(req, res, next) {
 			ctx = data.rows.length;
 			tbl = data.rows;
 		}
-		basic(req, res, 'templates', { ctx: ctx, tbl: tbl, template_msg: msg(req, 'add', 'Template added successfully', 'Template does not exist'), auth: true });
+	pool.query(sql_query.query.get_if_admin, [username], (err, data) => {
+		if(err || !data.rows || data.rows.length == 0) {
+		ifadmin = [];
+	}else
+	{
+		ifadmin = data.rows;
+		if(ifadmin[0].count >= 1) {
+			toShow = true;
+		}
+	}
+
+		basic(req, res, 'templates', { ctx: ctx, tbl: tbl, toShow: toShow, template_msg: msg(req, 'add', 'Template added successfully', 'User not allowed to add templates'), auth: true });
 	});
+});
 }
 function creators(req, res, next) {
 	var ctx = 0, avg = 0, tbl, follow_tbl;
@@ -421,11 +532,10 @@ function delete_follower(req, res, next) {
 }
 function add_template(req, res, next) {
 	var aname = req.user.username;
-	var tname = req.body.tname;
-	var category = req.body.category;
-	var style = req.body.style;
-	pool.query(sql_query.query.add_template, [tname, category, style, aname], (err, data) => {
-		if (err) {
+	var tname  = req.body.tname;
+	var style   = req.body.style;
+	pool.query(sql_query.query.add_template, [tname, style, aname], (err, data) => {
+		if(err) {
 			console.error("Error in adding project template");
 			console.error(err);
 			res.redirect('/templates?add=fail');
@@ -457,6 +567,23 @@ function add_fund(req, res, next) {
 			}
 		});
 	});
+}
+
+function add_update(req, res, next) {
+	var username = req.user.username;
+	var pname  = req.params.id;
+	var today = new Date();
+	var date = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate();
+	var updates = req.body.descr;
+
+	pool.query(sql_query.query.add_update, [pname, date, updates ], (err, data) => {
+		if(err) {
+			console.error("Error in adding updates");
+			res.redirect('/projects');
+		} else {
+			res.redirect('/projectInfo/'+pname);
+	}
+});
 }
 
 // function add_fund(req, res, next) {

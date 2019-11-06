@@ -7,59 +7,60 @@ const moment = require('moment');
 const { Pool } = require('pg');
 const pool = new Pool({
 	connectionString: process.env.DATABASE_URL,
-  //ssl: true
+	//ssl: true
 });
 
 const round = 10;
-const salt  = bcrypt.genSaltSync(round);
+const salt = bcrypt.genSaltSync(round);
 
 function initRouter(app) {
 	/* GET */
-	app.get('/'      , index );
+	app.get('/', index);
 	app.get('/search', search);
-	
+
 	/* PROTECTED GET */
 	app.get('/dashboard', passport.authMiddleware(), dashboard);
-	app.get('/games'    , passport.authMiddleware(), games    );
-	app.get('/plays'    , passport.authMiddleware(), plays    );
+	app.get('/games', passport.authMiddleware(), games);
+	app.get('/plays', passport.authMiddleware(), plays);
 
-	app.get('/all_projects' , passport.authMiddleware(), allprojects );
-	app.get('/projects' , passport.authMiddleware(), projects );
-	app.get('/projectInfo' , passport.authMiddleware(), projectInfo);
-	app.get('/projectInfo/:id' , passport.authMiddleware(), projectInfo);
+	app.get('/all_projects', passport.authMiddleware(), allprojects);
+	app.get('/projects', passport.authMiddleware(), projects);
+	app.get('/projectInfo', passport.authMiddleware(), projectInfo);
+	app.get('/projectInfo/:id', passport.authMiddleware(), projectInfo);
 
-	app.get('/templates' , passport.authMiddleware(), templates );
-	app.get('/creators' , passport.authMiddleware(), creators );
-	app.get('/fundings' , passport.authMiddleware(), fundings );
-	app.get('/likedprojects' , passport.authMiddleware(), likedprojects)
+	app.get('/templates', passport.authMiddleware(), templates);
+	app.get('/creators', passport.authMiddleware(), creators);
+	app.get('/fundings', passport.authMiddleware(), fundings);
+	app.get('/likedprojects', passport.authMiddleware(), likedprojects)
+	// app.post('/checkLiked'   , passport.authMiddleware(), checkLiked);
 
-	app.get('/register' , passport.antiMiddleware(), register );
-	app.get('/password' , passport.antiMiddleware(), retrieve );
-	
+	app.get('/register', passport.antiMiddleware(), register);
+	app.get('/password', passport.antiMiddleware(), retrieve);
+
 	/* PROTECTED POST */
 	app.post('/update_info', passport.authMiddleware(), update_info);
 	app.post('/update_pass', passport.authMiddleware(), update_pass);
-	app.post('/add_game'   , passport.authMiddleware(), add_game   );
-	app.post('/add_play'   , passport.authMiddleware(), add_play   );
+	app.post('/add_game', passport.authMiddleware(), add_game);
+	app.post('/add_play', passport.authMiddleware(), add_play);
 
-	app.post('/add_project'   , passport.authMiddleware(), add_project   );
-	app.post('/add_fund/:id'   , passport.authMiddleware(),add_fund);
-	app.post('/add_template'   , passport.authMiddleware(), add_template   );
-	app.post('/add_follower'   , passport.authMiddleware(), add_follower   );
+	app.post('/add_project', passport.authMiddleware(), add_project);
+	app.post('/add_fund/:id', passport.authMiddleware(), add_fund);
+	app.post('/add_template', passport.authMiddleware(), add_template);
+	app.post('/add_follower', passport.authMiddleware(), add_follower);
 
-	app.post('/delete_follower'   , passport.authMiddleware(), delete_follower   );
+	app.post('/delete_follower', passport.authMiddleware(), delete_follower);
 
-	app.post('/reg_user'   , passport.antiMiddleware(), reg_user   );
+	app.post('/reg_user', passport.antiMiddleware(), reg_user);
 
-	app.post('/like_project'   , passport.authMiddleware(), like_project   );
-	app.post('/unlike_project'   , passport.authMiddleware(), unlike_project   );
+	app.post('/like_project', passport.authMiddleware(), like_project);
+	app.post('/unlike_project', passport.authMiddleware(), unlike_project);
 
 	/* LOGIN */
 	app.post('/login', passport.authenticate('local', {
 		successRedirect: '/dashboard',
 		failureRedirect: '/'
 	}));
-	
+
 	/* LOGOUT */
 	app.get('/logout', passport.authMiddleware(), logout);
 }
@@ -71,11 +72,11 @@ function basic(req, res, page, other) {
 		page: page,
 		username: req.user.username,
 		firstname: req.user.firstname,
-		lastname : req.user.lastname,
-		rdate : req.user.r_date,
+		lastname: req.user.lastname,
+		rdate: req.user.r_date,
 	};
-	if(other) {
-		for(var fld in other) {
+	if (other) {
+		for (var fld in other) {
 			info[fld] = other[fld];
 		}
 	}
@@ -86,49 +87,49 @@ function query(req, fld) {
 }
 function msg(req, fld, pass, fail) {
 	var info = query(req, fld);
-	return info ? (info=='pass' ? pass : fail) : '';
+	return info ? (info == 'pass' ? pass : fail) : '';
 }
 
 // GET
 function index(req, res, next) {
 	var ctx = 0, idx = 0, tbl, total;
-	if(Object.keys(req.query).length > 0 && req.query.p) {
-		idx = req.query.p-1;
+	if (Object.keys(req.query).length > 0 && req.query.p) {
+		idx = req.query.p - 1;
 	}
 	pool.query(sql_query.query.page_lims, (err, data) => {
-		if(err || !data.rows || data.rows.length == 0) {
+		if (err || !data.rows || data.rows.length == 0) {
 			tbl = [];
 		} else {
 			tbl = data.rows;
 		}
 		pool.query(sql_query.query.ctx_games, (err, data) => {
-			if(err || !data.rows || data.rows.length == 0) {
+			if (err || !data.rows || data.rows.length == 0) {
 				ctx = 0;
 			} else {
 				ctx = data.rows[0].count;
 			}
-			total = ctx%10 == 0 ? ctx/10 : (ctx - (ctx%10))/10 + 1;
-			console.log(idx*10, idx*10+10, total);
-			if(!req.isAuthenticated()) {
-				res.render('index', { page: '', auth: false, tbl: tbl, ctx: ctx, p: idx+1, t: total });
+			total = ctx % 10 == 0 ? ctx / 10 : (ctx - (ctx % 10)) / 10 + 1;
+			console.log(idx * 10, idx * 10 + 10, total);
+			if (!req.isAuthenticated()) {
+				res.render('index', { page: '', auth: false, tbl: tbl, ctx: ctx, p: idx + 1, t: total });
 			} else {
-				basic(req, res, 'index', { page: '', auth: true, tbl: tbl, ctx: ctx, p: idx+1, t: total });
+				basic(req, res, 'index', { page: '', auth: true, tbl: tbl, ctx: ctx, p: idx + 1, t: total });
 			}
 		});
 	});
 }
 function search(req, res, next) {
-	var ctx  = 0, avg = 0, tbl;
+	var ctx = 0, avg = 0, tbl;
 	var game = "%" + req.query.gamename.toLowerCase() + "%";
 	pool.query(sql_query.query.search_game, [game], (err, data) => {
-		if(err || !data.rows || data.rows.length == 0) {
+		if (err || !data.rows || data.rows.length == 0) {
 			ctx = 0;
 			tbl = [];
 		} else {
 			ctx = data.rows.length;
 			tbl = data.rows;
 		}
-		if(!req.isAuthenticated()) {
+		if (!req.isAuthenticated()) {
 			res.render('search', { page: 'search', auth: false, tbl: tbl, ctx: ctx });
 		} else {
 			basic(req, res, 'search', { page: 'search', auth: true, tbl: tbl, ctx: ctx });
@@ -141,13 +142,13 @@ function dashboard(req, res, next) {
 function games(req, res, next) {
 	var ctx = 0, avg = 0, tbl;
 	pool.query(sql_query.query.avg_rating, [req.user.username], (err, data) => {
-		if(err || !data.rows || data.rows.length == 0) {
+		if (err || !data.rows || data.rows.length == 0) {
 			avg = 0;
 		} else {
 			avg = data.rows[0].avg;
 		}
 		pool.query(sql_query.query.all_games, [req.user.username], (err, data) => {
-			if(err || !data.rows || data.rows.length == 0) {
+			if (err || !data.rows || data.rows.length == 0) {
 				ctx = 0;
 				tbl = [];
 			} else {
@@ -161,19 +162,19 @@ function games(req, res, next) {
 function plays(req, res, next) {
 	var win = 0, avg = 0, ctx = 0, tbl;
 	pool.query(sql_query.query.count_wins, [req.user.username], (err, data) => {
-		if(err || !data.rows || data.rows.length == 0) {
+		if (err || !data.rows || data.rows.length == 0) {
 			win = 0;
 		} else {
 			win = data.rows[0].count;
 		}
 		pool.query(sql_query.query.all_plays, [req.user.username], (err, data) => {
-			if(err || !data.rows || data.rows.length == 0) {
+			if (err || !data.rows || data.rows.length == 0) {
 				ctx = 0;
 				avg = 0;
 				tbl = [];
 			} else {
 				ctx = data.rows.length;
-				avg = win == 0 ? 0 : win/ctx;
+				avg = win == 0 ? 0 : win / ctx;
 				tbl = data.rows;
 			}
 			basic(req, res, 'plays', { win: win, ctx: ctx, avg: avg, tbl: tbl, play_msg: msg(req, 'add', 'Play added successfully', 'Invalid parameter in play'), auth: true });
@@ -183,7 +184,7 @@ function plays(req, res, next) {
 function allprojects(req, res, next) {
 	var ctx = 0, avg = 0, tbl, templates;
 	pool.query(sql_query.query.all_projects, (err, data) => {
-		if(err || !data.rows || data.rows.length == 0) {
+		if (err || !data.rows || data.rows.length == 0) {
 			ctx = 0;
 			tbl = [];
 		} else {
@@ -196,7 +197,7 @@ function allprojects(req, res, next) {
 function projects(req, res, next) {
 	var ctx = 0, avg = 0, tbl, templates;
 	pool.query(sql_query.query.user_projects, [req.user.username], (err, data) => {
-		if(err || !data.rows || data.rows.length == 0) {
+		if (err || !data.rows || data.rows.length == 0) {
 			ctx = 0;
 			tbl = [];
 		} else {
@@ -204,7 +205,7 @@ function projects(req, res, next) {
 			tbl = data.rows;
 		}
 		pool.query(sql_query.query.all_templates, (err, data) => {
-			if(err || !data.rows || data.rows.length == 0) {
+			if (err || !data.rows || data.rows.length == 0) {
 				templates = [];
 			} else {
 				templates = data.rows;
@@ -214,31 +215,44 @@ function projects(req, res, next) {
 	});
 }
 function projectInfo(req, res, next) {
-	var ctx = 0, avg = 0, tbl, tiers;
+	var ctx = 0, avg = 0, tbl, tiers, likes;
 	var pname = req.params.id;
-	pool.query(sql_query.query.project_info, [pname], (err, data) => {
-		if(err || !data.rows || data.rows.length == 0) {
-		ctx = 0;
-		tbl = [];
-	}else {
-		ctx = data.rows.length;
-		tbl = data.rows;
-	}
-    pool.query(sql_query.query.get_tier, [pname], (err, data) => {
-        if(err || !data.rows || data.rows.length == 0) {
-        tiers = [];
-    }else
-    {
-        tiers = data.rows;
+	var username = req.user.username;
+    function isLiked(name, liked_projects) {
+		for (var i=0; i<liked_projects.length; i++) {
+			if (liked_projects[i].pname === name) return true
+		}
+		return false
     }
-     basic(req, res, 'projectInfo', { ctx: ctx, tbl: tbl, tiers : tiers, moment: moment, project_msg: msg(req, 'add', 'Project loaded', 'Project does not exist'), auth: true });
-});
-});
+	pool.query(sql_query.query.project_info, [pname], (err, data) => {
+		if (err || !data.rows || data.rows.length == 0) {
+			ctx = 0;
+			tbl = [];
+		} else {
+			ctx = data.rows.length;
+			tbl = data.rows;
+		}
+		pool.query(sql_query.query.get_tier, [pname], (err, data) => {
+			if (err || !data.rows || data.rows.length == 0) {
+				tiers = [];
+			} else {
+				tiers = data.rows;
+			}
+			pool.query(sql_query.query.all_liked, [username], (err, data) => {
+				if (err || !data.rows || data.rows.length === 0) {
+					likes = [];
+				} else {
+					likes = data.rows;
+				}
+				basic(req, res, 'projectInfo', { isLiked: isLiked, ctx: ctx, tbl: tbl, tiers: tiers, likes: likes, moment: moment, project_msg: msg(req, 'add', 'Project loaded', 'Project does not exist'), auth: true });
+			})
+		});
+	});
 }
 function templates(req, res, next) {
 	var ctx = 0, avg = 0, tbl;
 	pool.query(sql_query.query.all_templates, (err, data) => {
-		if(err || !data.rows || data.rows.length == 0) {
+		if (err || !data.rows || data.rows.length == 0) {
 			ctx = 0;
 			tbl = [];
 		} else {
@@ -251,7 +265,7 @@ function templates(req, res, next) {
 function creators(req, res, next) {
 	var ctx = 0, avg = 0, tbl, follow_tbl;
 	pool.query(sql_query.query.all_creators, [req.user.username], (err, data) => {
-		if(err || !data.rows || data.rows.length == 0) {
+		if (err || !data.rows || data.rows.length == 0) {
 			ctx = 0;
 			tbl = [];
 		} else {
@@ -259,7 +273,7 @@ function creators(req, res, next) {
 			tbl = data.rows;
 		}
 		pool.query(sql_query.query.all_follows, [req.user.username], (err, data) => {
-			if(err || !data.rows || data.rows.length == 0) {
+			if (err || !data.rows || data.rows.length == 0) {
 				follow_tbl = [];
 			} else {
 				follow_tbl = data.rows;
@@ -271,7 +285,7 @@ function creators(req, res, next) {
 function fundings(req, res, next) {
 	var ctx = 0, avg = 0, tbl;
 	pool.query(sql_query.query.all_fundings, [req.user.username], (err, data) => {
-		if(err || !data.rows || data.rows.length == 0) {
+		if (err || !data.rows || data.rows.length == 0) {
 			ctx = 0;
 			tbl = [];
 		} else {
@@ -282,18 +296,18 @@ function fundings(req, res, next) {
 	});
 }
 
-function likedprojects(req, res, next) { 
-	var ctx = 0, avg = 0, tbl;
+function likedprojects(req, res, next) {
+	var ctx = 0, avg = 0, likes;
 	var username = req.user.username;
 	pool.query(sql_query.query.all_liked, [username], (err, data) => {
-		if(err || !data.rows || data.rows.length == 0) {
+		if (err || !data.rows || data.rows.length === 0) {
 			ctx = 0;
-			tbl = [];
+			likes = [];
 		} else {
 			ctx = data.rows.length;
-			tbl = data.rows;
+			likes = data.rows;
 		}
-		basic(req, res, 'likedprojects', { ctx: ctx, tbl: tbl, auth: true });
+		basic(req, res, 'likedprojects', { ctx: ctx, likes: likes, auth: true });
 	});
 }
 
@@ -307,11 +321,11 @@ function retrieve(req, res, next) {
 
 // POST 
 function update_info(req, res, next) {
-	var username  = req.user.username;
+	var username = req.user.username;
 	var firstname = req.body.firstname;
-	var lastname  = req.body.lastname;
+	var lastname = req.body.lastname;
 	pool.query(sql_query.query.update_info, [username, firstname, lastname], (err, data) => {
-		if(err) {
+		if (err) {
 			console.error("Error in update info");
 			res.redirect('/dashboard?info=fail');
 		} else {
@@ -323,7 +337,7 @@ function update_pass(req, res, next) {
 	var username = req.user.username;
 	var password = bcrypt.hashSync(req.body.password, salt);
 	pool.query(sql_query.query.update_pass, [username, password], (err, data) => {
-		if(err) {
+		if (err) {
 			console.error("Error in update pass");
 			res.redirect('/dashboard?pass=fail');
 		} else {
@@ -337,7 +351,7 @@ function add_game(req, res, next) {
 	var gamename = req.body.gamename;
 
 	pool.query(sql_query.query.add_game, [username, gamename], (err, data) => {
-		if(err) {
+		if (err) {
 			console.error("Error in adding game");
 			res.redirect('/games?add=fail');
 		} else {
@@ -347,15 +361,15 @@ function add_game(req, res, next) {
 }
 function add_play(req, res, next) {
 	var username = req.user.username;
-	var player1  = req.body.player1;
-	var player2  = req.body.player2;
+	var player1 = req.body.player1;
+	var player2 = req.body.player2;
 	var gamename = req.body.gamename;
-	var winner   = req.body.winner;
-	if(username != player1 || player1 == player2 || (winner != player1 && winner != player2)) {
+	var winner = req.body.winner;
+	if (username != player1 || player1 == player2 || (winner != player1 && winner != player2)) {
 		res.redirect('/plays?add=fail');
 	}
 	pool.query(sql_query.query.add_play, [player1, player2, gamename, winner], (err, data) => {
-		if(err) {
+		if (err) {
 			console.error("Error in adding play");
 			res.redirect('/plays?add=fail');
 		} else {
@@ -365,15 +379,15 @@ function add_play(req, res, next) {
 }
 function add_project(req, res, next) {
 	var username = req.user.username;
-	var pname  = req.body.pname;
-	var tname  = req.body.tname;
+	var pname = req.body.pname;
+	var tname = req.body.tname;
 	var today = new Date();
-	var s_date = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate();
-	var e_date   = req.body.e_date;
+	var s_date = today.getFullYear() + '-' + (today.getMonth() + 1) + '-' + today.getDate();
+	var e_date = req.body.e_date;
 	var f_goal = req.body.f_goal;
 	var descr = req.body.descr;
 	pool.query(sql_query.query.add_project, [pname, username, tname, s_date, e_date, f_goal, descr], (err, data) => {
-		if(err) {
+		if (err) {
 			console.error("Error in adding project");
 			res.redirect('/projects?add=fail');
 		} else {
@@ -383,9 +397,9 @@ function add_project(req, res, next) {
 }
 function add_follower(req, res, next) {
 	var username = req.user.username;
-	var cname  = req.body.cname;
+	var cname = req.body.cname;
 	pool.query(sql_query.query.add_follower, [username, cname], (err, data) => {
-		if(err) {
+		if (err) {
 			console.error("Error in adding follower");
 			res.redirect('/creators?add=fail');
 		} else {
@@ -395,9 +409,9 @@ function add_follower(req, res, next) {
 }
 function delete_follower(req, res, next) {
 	var username = req.user.username;
-	var cname  = req.body.cname;
+	var cname = req.body.cname;
 	pool.query(sql_query.query.delete_follower, [username, cname], (err, data) => {
-		if(err) {
+		if (err) {
 			console.error("Error in deleting follower");
 			res.redirect('/creators?delete=fail');
 		} else {
@@ -407,11 +421,11 @@ function delete_follower(req, res, next) {
 }
 function add_template(req, res, next) {
 	var aname = req.user.username;
-	var tname  = req.body.tname;
-	var category  = req.body.category;
-	var style   = req.body.style;
+	var tname = req.body.tname;
+	var category = req.body.category;
+	var style = req.body.style;
 	pool.query(sql_query.query.add_template, [tname, category, style, aname], (err, data) => {
-		if(err) {
+		if (err) {
 			console.error("Error in adding project template");
 			console.error(err);
 			res.redirect('/templates?add=fail');
@@ -422,20 +436,20 @@ function add_template(req, res, next) {
 }
 function add_fund(req, res, next) {
 	var username = req.user.username;
-	var pname  = req.params.id;
+	var pname = req.params.id;
 	var today = new Date();
-	var date = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate();
+	var date = today.getFullYear() + '-' + (today.getMonth() + 1) + '-' + today.getDate();
 	var funding = parseInt(req.body.funding);
 	var status = "t";
-    pool.query(sql_query.query.get_tier, [pname, funding], (err, data) => {
-		if(err || !data.rows || data.rows.length == 0) {
+	pool.query(sql_query.query.get_tier, [pname, funding], (err, data) => {
+		if (err || !data.rows || data.rows.length == 0) {
 			console.error("Error in getting tier");
 			res.redirect('/projects');
-		}else {
+		} else {
 			tname = data.rows[0].tname;
 		}
-		pool.query(sql_query.query.add_fund, [pname, tname, username, date , funding , status  ], (err, data) => {
-			if(err) {
+		pool.query(sql_query.query.add_fund, [pname, tname, username, date, funding, status], (err, data) => {
+			if (err) {
 				console.error("Error in adding fund");
 				res.redirect('/projects');
 			} else {
@@ -465,22 +479,22 @@ function add_fund(req, res, next) {
 // }
 
 function reg_user(req, res, next) {
-	var username  = req.body.username;
-	var password  = bcrypt.hashSync(req.body.password, salt);
+	var username = req.body.username;
+	var password = bcrypt.hashSync(req.body.password, salt);
 	var firstname = req.body.firstname;
-	var lastname  = req.body.lastname;
+	var lastname = req.body.lastname;
 	var today = new Date();
-	var date = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate();
-	pool.query(sql_query.query.add_user, [username,password,firstname,lastname,date], (err, data) => {
-		if(err) {
+	var date = today.getFullYear() + '-' + (today.getMonth() + 1) + '-' + today.getDate();
+	pool.query(sql_query.query.add_user, [username, password, firstname, lastname, date], (err, data) => {
+		if (err) {
 			console.error("Error in adding user", err);
 			res.redirect('/register?reg=fail');
 		} else {
 			req.login({
-				username    : username,
+				username: username,
 				passwordHash: password,
-			}, function(err) {
-				if(err) {
+			}, function (err) {
+				if (err) {
 					return res.redirect('/register?reg=fail');
 				} else {
 					return res.redirect('/dashboard');
@@ -490,27 +504,41 @@ function reg_user(req, res, next) {
 	});
 }
 
+// function checkLiked(req, res, next) {
+// 	var username = req.user.username;
+// 	var pname  = req.body.pname; 
+// 	console.log("checking")
+// 	pool.query(sql_query.query.like_project, [username, pname], (err, data) => {
+// 		if(err.includes("duplicate key value")) {
+// 			console.error(`Error: ${err}`);
+// 			return false;
+// 		} else {
+// 			return true;
+// 		} 
+// 	});
+// }
+
 function like_project(req, res, next) {
 	var username = req.user.username;
-	var pname  = req.body.pname;
+	var pname = req.body.pname;
 	pool.query(sql_query.query.like_project, [username, pname], (err, data) => {
-		if(err) {
-			console.error("Error in liking project");
-			res.redirect('/projectInfo?like=fail');
+		if (err) {
+			console.error(`Error: ${err}`);
+			res.redirect('back');
 		} else {
-			res.redirect('/projectInfo?like=pass');
+			res.redirect('back');
 		}
 	});
 }
 function unlike_project(req, res, next) {
 	var username = req.user.username;
-	var pname  = req.body.pname;
+	var pname = req.body.pname;
 	pool.query(sql_query.query.unlike_project, [username, pname], (err, data) => {
-		if(err) {
-			console.error("Error in unliking project");
-			res.redirect('/projectInfo?unlike=fail');
+		if (err) {
+			console.error(`Error: ${err}`);
+			res.redirect('back');
 		} else {
-			res.redirect('/projectInfo?unlike=pass');
+			res.redirect('back');
 		}
 	});
 }

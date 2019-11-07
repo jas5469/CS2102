@@ -46,7 +46,7 @@
 										<% for(var i=0; i<tbl.length; i++) { %>
 										<tr>
 											<td><%= i+1 %></td>
-											<td><%= tbl[i].pname%></td>
+											<td><a href="/projectInfo/<%= tbl[i].pname %>"><%= tbl[i].pname%></td>
 											<td><%= tbl[i].cname%></td>
 										</tr>
 										<% } %>

@@ -72,7 +72,8 @@ sql.query = {
 				WHERE p.pname = f.pname  \
 				AND f.status = true \
 				GROUP BY p.pname) total \
-			WHERE total.tname = p1.tname)',
+			WHERE total.tname = p1.tname) \
+		ORDER BY p1.tname',
 	rank_closest_goal: 'SELECT p.pname, sum.amount \
 		FROM Projects p LEFT JOIN ( \
 			SELECT p.pname, p.f_goal-  \

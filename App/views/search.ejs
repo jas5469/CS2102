@@ -14,7 +14,7 @@
 
 		<!-- Custom styles for this template-->
 		<link href="stylesheets/index.css" rel="stylesheet">
-	  <link rel="icon" href="/images/logo copy.png" type="image/x-icon">
+	  <link rel="icon" href="/images/piggy-bank.png" type="image/x-icon">
   </head>
 	<body id="page-top">
 		<%- include navbar.ejs %>
@@ -46,7 +46,7 @@
 										<% for(var i=0; i<tbl.length; i++) { %>
 										<tr>
 											<td><%= i+1 %></td>
-											<td><%= tbl[i].pname%></td>
+											<td><a href="/projectInfo/<%= tbl[i].pname %>"><%= tbl[i].pname%></td>
 											<td><%= tbl[i].cname%></td>
 										</tr>
 										<% } %>

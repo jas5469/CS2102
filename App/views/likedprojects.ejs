@@ -29,9 +29,9 @@
                     <div class="card-header">
                         <i class="fas fa-users"></i> &nbsp; Liked Projects
                     </div>
-                    <div class="card-body d-flex flex-wrap justify-content-between">
+                    <div class="card-body d-flex flex-wrap">
                         <% for(var i=0; i<likes.length; i++) { %>
-                        <div class="card mb-3" style="width: 32%">
+                        <div class="card mb-3 ml-2" style="width: 32%">
                             <div class="card-body">
                                 <h5 class="card-title">
                                     <a href="/projectInfo/<%= likes[i].pname %>"><%= likes[i].pname%> </a>

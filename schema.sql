@@ -143,6 +143,24 @@ BEFORE INSERT ON Projects
 FOR EACH ROW
 EXECUTE PROCEDURE add_creator();
 
+CREATE OR REPLACE FUNCTION check_admin_if_creator()
+RETURNS TRIGGER AS
+$$
+BEGIN
+    IF (NEW.aname IN (SELECT cname FROM Creators)) THEN
+        RETURN NULL;
+    ELSE
+        RETURN NEW;
+    END IF;
+END;
+$$
+LANGUAGE plpgsql;
+
+CREATE TRIGGER check_admin_if_creator_trigger
+BEFORE INSERT OR UPDATE ON Admins
+FOR EACH ROW
+EXECUTE PROCEDURE check_admin_if_creator();
+
 
 INSERT INTO Users VALUES ('judd', '$2b$10$x6qys44jV5yi72aCxlDSm.cvT2FzCeBbTOSj3COxqP88m7KkWrCp2', 'Judd', 'Larsen', DATE('2019-01-08'));
 INSERT INTO Users VALUES ('amity', '$2b$10$x6qys44jV5yi72aCxlDSm.cvT2FzCeBbTOSj3COxqP88m7KkWrCp2', 'Amity', 'Gutierrez', DATE('2019-01-30'));

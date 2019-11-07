@@ -145,24 +145,27 @@ function profile(req, res, next) {
 	basic(req, res, 'profile', { info_msg: msg(req, 'info', 'Information updated successfully', 'Error in updating information'), pass_msg: msg(req, 'pass', 'Password updated successfully', 'Error in updating password'), auth: true });
 }
 function dashboard(req, res, next) {
-	var ctx = 0, avg = 0, tbl, tbl2;
-	pool.query(sql_query.query.rank_highest_funded_by_category, (err, data) => {
+	var avg = 0, tbl, tbl2, tbl3;
+	pool.query(sql_query.query.suggest_projects, [req.user.username], (err, data) => {
 		if(err || !data.rows || data.rows.length == 0) {
-			ctx = 0;
 			tbl = [];
 		} else {
-			ctx = data.rows.length;
 			tbl = data.rows;
 		}
-		pool.query(sql_query.query.rank_closest_goal, (err, data) => {
+		pool.query(sql_query.query.rank_highest_funded_by_category, (err, data) => {
 			if(err || !data.rows || data.rows.length == 0) {
-				ctx = 0;
 				tbl2 = [];
 			} else {
-				ctx = data.rows.length;
 				tbl2 = data.rows;
 			}
-			basic(req, res, 'dashboard', { tbl: tbl, tbl2: tbl2, auth: true });
+			pool.query(sql_query.query.rank_closest_goal, (err, data) => {
+				if(err || !data.rows || data.rows.length == 0) {
+					tbl3 = [];
+				} else {
+					tbl3 = data.rows;
+				}
+				basic(req, res, 'dashboard', { tbl: tbl, tbl2: tbl2, tbl3: tbl3, auth: true });
+			});
 		});
 	});
 }

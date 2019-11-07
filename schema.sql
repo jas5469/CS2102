@@ -33,7 +33,7 @@ CREATE TABLE Creators (
 
 CREATE TABLE ProjectTemplates (
     tname               VARCHAR(100),
-    style               TEXT,
+    style               TEXT NOT NULL,
     aname               VARCHAR(50) NOT NULL,
     PRIMARY KEY (tname),
     FOREIGN KEY (aname) REFERENCES Admins(aname) ON DELETE CASCADE
@@ -65,8 +65,8 @@ CREATE TABLE Comments (
 );
 
 CREATE TABLE Saves (
-    username             VARCHAR(50) NOT NULL,
-    pname                VARCHAR(100) NOT NULL,
+    username             VARCHAR(50),
+    pname                VARCHAR(100),
     PRIMARY KEY (username, pname),
     FOREIGN KEY (username) REFERENCES Users(username) ON DELETE CASCADE,
     FOREIGN KEY (pname) REFERENCES Projects(pname) ON DELETE CASCADE
@@ -679,7 +679,11 @@ INSERT INTO ProjectTemplates VALUES ('Food & Craft', 'Test', 'sheridan');
 INSERT INTO ProjectTemplates VALUES ('Publishing', 'Test', 'rayleen');
 
 INSERT INTO Projects VALUES ('Stockwarm', 'judd', 'Music', DATE('2019-01-08'), DATE('2020-01-31'), 5980, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.');
+INSERT INTO Projects VALUES ('Stocktock', 'judd', 'Games', DATE('2019-10-24'), DATE('2020-01-31'), 5580, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.');
+INSERT INTO Projects VALUES ('Stockmerry', 'judd', 'Books', DATE('2019-01-30'), DATE('2020-01-31'), 3170, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.');
 INSERT INTO Projects VALUES ('Tampdanlight', 'amity', 'Games', DATE('2019-01-30'), DATE('2020-01-31'), 3170, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.');
+INSERT INTO Projects VALUES ('Tamtam', 'amity', 'Books', DATE('2019-01-30'), DATE('2020-01-31'), 3170, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.');
+INSERT INTO Projects VALUES ('Tamdomdom', 'amity', 'Music', DATE('2019-01-30'), DATE('2020-01-31'), 3170, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.');
 INSERT INTO Projects VALUES ('Overlight', 'grey', 'Books', DATE('2019-02-22'), DATE('2020-01-31'), 6140, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.');
 INSERT INTO Projects VALUES ('Kontax', 'carmden', 'Arts', DATE('2019-02-27'), DATE('2020-01-31'), 4740, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.');
 INSERT INTO Projects VALUES ('Spanzendox', 'caren', 'Comics & Illustration', DATE('2019-03-13'), DATE('2020-01-31'), 7350, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.');
@@ -1686,9 +1690,21 @@ INSERT INTO ProjectUpdates VALUES ('Stockdonzap', DATE('2019-11-06'), 'Lorem ips
 INSERT INTO FundingTiers VALUES ('T1', 'Stockwarm', 25);
 INSERT INTO FundingTiers VALUES ('T2', 'Stockwarm', 50);
 INSERT INTO FundingTiers VALUES ('T3', 'Stockwarm', 75);
+INSERT INTO FundingTiers VALUES ('T1', 'Stocktock', 25);
+INSERT INTO FundingTiers VALUES ('T2', 'Stocktock', 50);
+INSERT INTO FundingTiers VALUES ('T3', 'Stocktock', 75);
+INSERT INTO FundingTiers VALUES ('T1', 'Stockmerry', 25);
+INSERT INTO FundingTiers VALUES ('T2', 'Stockmerry', 50);
+INSERT INTO FundingTiers VALUES ('T3', 'Stockmerry', 75);
 INSERT INTO FundingTiers VALUES ('T1', 'Tampdanlight', 25);
 INSERT INTO FundingTiers VALUES ('T2', 'Tampdanlight', 50);
 INSERT INTO FundingTiers VALUES ('T3', 'Tampdanlight', 75);
+INSERT INTO FundingTiers VALUES ('T1', 'Tamtam', 25);
+INSERT INTO FundingTiers VALUES ('T2', 'Tamtam', 50);
+INSERT INTO FundingTiers VALUES ('T3', 'Tamtam', 75);
+INSERT INTO FundingTiers VALUES ('T1', 'Tamdomdom', 25);
+INSERT INTO FundingTiers VALUES ('T2', 'Tamdomdom', 50);
+INSERT INTO FundingTiers VALUES ('T3', 'Tamdomdom', 75);
 INSERT INTO FundingTiers VALUES ('T1', 'Overlight', 25);
 INSERT INTO FundingTiers VALUES ('T2', 'Overlight', 50);
 INSERT INTO FundingTiers VALUES ('T3', 'Overlight', 75);

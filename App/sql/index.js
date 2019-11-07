@@ -24,8 +24,8 @@ sql.query = {
 	all_fundings: 'SELECT * FROM fundings WHERE username=$1',
 	get_tier: 'SELECT tname \
 		FROM FundingTiers \
-		WHERE pname=$1 AND amount>=$2\
-		ORDER BY amount ASC\
+		WHERE pname=$1 AND amount<=$2\
+		ORDER BY amount DESC\
 		LIMIT 1',
     get_all_tiers: 'SELECT * FROM FundingTiers WHERE pname=$1',
     get_all_comments: 'SELECT * FROM comments WHERE pname=$1',
@@ -60,6 +60,14 @@ sql.query = {
 	search_project: 'SELECT * FROM projects WHERE lower(pname) LIKE $1',
 
 	// Rank
+	suggest_projects: 'WITH Funded AS (SELECT p.cname, p.pname \
+			FROM Projects p, Fundings f \
+			WHERE p.pname = f.pname \
+			AND f.username=$1) \
+		SELECT p.pname, p.cname \
+		FROM Projects p \
+		WHERE p.pname NOT IN (SELECT pname FROM funded) \
+		AND p.cname IN (SELECT cname FROM funded);',
 	rank_highest_funded_by_category: 'SELECT p1.tname, p1.pname, SUM(amount) as total\
 		FROM Projects p1, Fundings f \
 		WHERE p1.pname = f.pname \

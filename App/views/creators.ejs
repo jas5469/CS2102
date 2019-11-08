@@ -24,7 +24,24 @@
 			
 			<div id="content-wrapper">
 				<div class="container-fluid">
-					
+
+					<div class="card mb-3">
+						<div class="card-header">
+							<i class="fas fa-users"></i> &nbsp; Your Fans
+						</div>
+						<div>
+							<div class="card-footer "><span class="badge badge-primary">Fans are users who follows you and funded in one of your project!</span></div>
+						</div>
+						<div class="card-body d-flex flex-wrap">
+							<% for(var i=0; i<fan.length; i++) { %>
+								<div class="card mb-3 ml-2" style="width: 32%">
+									<div class="card-body">
+										<h5 class="card-title"><i class="fas fa-fw fa-user mr-2"></i><a href="/creatorInfo/<%= fan[i].username %>"><%= fan[i].username%></a></h5>
+									</div>
+								</div>
+							<% } %>
+						</div>
+					</div>
 					<div class="card mb-3">
 						<div class="card-header">
 							<i class="fas fa-users"></i> &nbsp; All Creators

@@ -387,7 +387,8 @@ function templates(req, res, next) {
 });
 }
 function creators(req, res, next) {
-	var ctx = 0, avg = 0, tbl, follow_tbl;
+	var ctx = 0, avg = 0, tbl, follow_tbl ,fan;
+
 	pool.query(sql_query.query.all_creators, [req.user.username], (err, data) => {
 		if (err || !data.rows || data.rows.length == 0) {
 			ctx = 0;
@@ -402,8 +403,16 @@ function creators(req, res, next) {
 			} else {
 				follow_tbl = data.rows;
 			}
-			basic(req, res, 'creators', { ctx: ctx, tbl: tbl, follow_tbl: follow_tbl, auth: true });
+	pool.query(sql_query.query.get_fan, [req.user.username], (err, data) => {
+		if (err || !data.rows || data.rows.length == 0) {
+		fan = [];
+	} else {
+		fan = data.rows;
+
+	}
+			basic(req, res, 'creators', { ctx: ctx, tbl: tbl, follow_tbl: follow_tbl, fan:fan, auth: true });
 		});
+});
 	});
 }
 function creatorsInfo(req, res, next) {

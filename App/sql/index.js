@@ -18,6 +18,7 @@ sql.query = {
 	project_info: 'SELECT * FROM projects WHERE pname=$1',
 	all_projects: 'SELECT * FROM projects',
 	user_projects: 'SELECT * FROM projects WHERE cname=$1',
+	user_followers: 'SELECT * FROM follows WHERE cname=$1',
 	all_templates: 'SELECT * FROM projecttemplates',
 	all_creators: 'SELECT * FROM creators WHERE cname<>$1',
 	all_follows: 'SELECT cname FROM follows WHERE username=$1',
@@ -42,6 +43,7 @@ sql.query = {
 	add_user: 'INSERT INTO Users (username, password, firstname, lastname, r_date) VALUES ($1,$2,$3,$4,$5)',
 
 	add_project: 'INSERT INTO Projects (pname, cname, tname, s_date, e_date, f_goal, description) VALUES ($1,$2,$3,$4,$5,$6,$7)',
+	add_funding_tiers: 'INSERT INTO FundingTiers(tname, pname, amount) VALUES ($1,$2,$3)',
 	add_fund: 'INSERT INTO Fundings (pname, tname , username, f_date, amount, status) VALUES($1,$2,$3,$4,$5,$6)',
 	withdraw_fund: 'UPDATE fundings SET status=$3 WHERE username=$1 AND pname=$2',
 	delete_funding: 'DELETE from Fundings WHERE pname=$1 AND tname=$2 AND username=$3',

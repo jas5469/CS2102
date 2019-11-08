@@ -32,8 +32,10 @@ function initRouter(app) {
 
 	app.get('/templates', passport.authMiddleware(), templates);
 	app.get('/creators', passport.authMiddleware(), creators);
+	app.get('/creatorInfo/', passport.authMiddleware(), creatorsInfo);
+	app.get('/creatorInfo/:id', passport.authMiddleware(), creatorsInfo);
 	app.get('/fundings', passport.authMiddleware(), fundings);
-	app.get('/likedprojects', passport.authMiddleware(), likedprojects)
+	app.get('/likedprojects', passport.authMiddleware(), likedprojects);
 	// app.post('/checkLiked'   , passport.authMiddleware(), checkLiked);
 
 	app.get('/register', passport.antiMiddleware(), register);
@@ -404,6 +406,25 @@ function creators(req, res, next) {
 		});
 	});
 }
+function creatorsInfo(req, res, next) {
+	var ctx = 0, avg = 0, projects_tbl, followers_tbl;
+	var cname = req.params.id;
+	pool.query(sql_query.query.user_projects, [cname], (err, data) => {
+		if (err || !data.rows || data.rows.length == 0) {
+			projects_tbl = [];
+		} else {
+			projects_tbl = data.rows;
+		}
+		pool.query(sql_query.query.user_followers, [cname], (err, data) => {
+			if (err || !data.rows || data.rows.length == 0) {
+				followers_tbl = [];
+			} else {
+				followers_tbl = data.rows;
+			}
+			basic(req, res, 'creatorsinfo', { ctx: ctx, tbl: projects_tbl, tbl2: followers_tbl, moment:moment, auth: true });
+		});
+	});
+}
 function fundings(req, res, next) {
 	var ctx = 0, avg = 0, tbl;
 	pool.query(sql_query.query.all_fundings, [req.user.username], (err, data) => {
@@ -508,13 +529,26 @@ function add_project(req, res, next) {
 	var e_date = req.body.e_date;
 	var f_goal = req.body.f_goal;
 	var descr = req.body.descr;
+	var count = 0
+	var values_string = "";
+	req.body = JSON.parse(JSON.stringify(req.body));
+	
 	pool.query(sql_query.query.add_project, [pname, username, tname, s_date, e_date, f_goal, descr], (err, data) => {
 		if (err) {
-			console.error("Error in adding project");
+			console.error("Error in adding projects");
 			res.redirect('/projects?add=fail');
-		} else {
-			res.redirect('/projects?add=pass');
 		}
+		while (true) {
+			if(req.body.hasOwnProperty("tier_name_"+count)) {
+				var name_prop = 'tier_name_'+count
+				var value_prop = 'tier_value_'+count
+				if(req.body[name_prop] === '') { break; }
+				
+				pool.query(sql_query.query.add_funding_tiers, [req.body[name_prop], pname, req.body[value_prop]]);
+				count++;
+			}
+		}
+		res.redirect('/projects?add=pass');
 	});
 }
 function add_follower(req, res, next) {

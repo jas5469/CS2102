@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>FundME</title>
+
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.1/css/all.css"
+        integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+    <link href="https://cdn.datatables.net/1.10.18/css/dataTables.bootstrap4.min.css" rel="stylesheet">
+
+    <!-- Custom styles for this template-->
+    <link href="/stylesheets/index.css" rel="stylesheet">
+    <link rel="icon" href="/images/piggy-bank.png" type="image/x-icon">
+</head>
+
+<body id="page-top">
+    <%- include navbar.ejs %>
+
+    <div id="wrapper">
+        <%- include sidebar.ejs %>
+
+        <div id="content-wrapper">
+            <div class="container-fluid">
+                <%- include name.ejs %>
+
+            <div class="card mb-3">
+                <div class="card-header">
+                    <i class="fas fa-user"></i> <%= tbl[0].cname%>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                            <thead>
+                            <tr>
+                                <th>Project Name</th>
+                                <th>Category</th>
+                                <th>Start Date</th>
+                                <th>End Date</th>
+                                <th>Goal</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            	<% for(var i=0; i<tbl.length; i++) { %>
+                                <tr>
+                                    <td><%= tbl[i].pname%></td>
+                                    <td><%= tbl[i].tname%></td>
+                                    <td><%= moment(tbl[i].s_date).format("DD/MM/YYYY")%></td>
+                                    <td><%= moment(tbl[i].e_date).format("DD/MM/YYYY")%></td>
+                                    <td><%= tbl[i].f_goal%></td>
+                                </tr>
+                                <% } %>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="table-responsive">
+                        <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                            <thead>
+                            <tr>
+                                <th>Followers</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            	<% for(var i=0; i<tbl2.length; i++) { %>
+                                <tr>
+                                    <td><%= tbl2[i].username%></td>
+                                </tr>
+                                <% } %>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <%- include bottomscript.ejs %>
+</body>
+</html>

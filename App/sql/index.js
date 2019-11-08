@@ -100,7 +100,9 @@ sql.query = {
 		ON p.pname = sum.pname \
 		WHERE sum.amount > 0 \
 		ORDER BY amount \
-		LIMIT 10'
+		LIMIT 10',
+	//get users who follows and funds your project
+	get_fan: 'With projectFunded AS ( SELECT * FROM (SELECT P.pname FROM Projects P WHERE P.cname=$1) AS myProject JOIN Fundings F ON myProject.pname = F.pname) SELECT FO.username FROM projectFunded PF JOIN follows FO ON PF.username=FO.username WHERE FO.cname=$1;',
 }
 
 module.exports = sql

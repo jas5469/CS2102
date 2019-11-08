@@ -25,6 +25,7 @@
 			<div id="content-wrapper">
 				<div class="container-fluid">
 					<%- include name.ejs %>
+                    <div class="card-footer "><span class="badge badge-primary"><%= project_msg %></span></div>
 					
 					<div class="card mb-3">
 						<div class="card-header">
@@ -40,11 +41,12 @@
 											<th>Fund Date</th>
 											<th>Amount</th>
 											<th>Status</th>
+											<th>Action</th>
 										</tr>
 									</thead>
 									<tfoot>
 										<!-- <th>Total: <i><%= ctx %></i></th> -->
-										<th colspan="4">Total:</th>
+										<th colspan="5">Total:</th>
 										<th><i><%= ctx %></i></th>
 									</tfoot>
 									<tbody>
@@ -60,6 +62,12 @@
 											<% } else { %>
 												<td><span class="badge badge-danger">Withdrawn</span></td>
 											<% } %>
+											<td>
+												<form action="/delete_fund/<%= tbl[i].pname %>" method="post" >
+													<button class="btn btn-info">Withdraw Fund</button>
+
+												</form>
+											</td>
 										</tr>
 										<% } %>
 									</tbody>

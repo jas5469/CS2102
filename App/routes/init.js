@@ -47,6 +47,8 @@ function initRouter(app) {
 
 	app.post('/add_project'   , passport.authMiddleware(), add_project   );
 	app.post('/add_fund/:id'   , passport.authMiddleware(),add_fund);
+	app.post('/delete_fund'   , passport.authMiddleware(),delete_fund);
+	app.post('/delete_fund/:id'   , passport.authMiddleware(),delete_fund);
 	app.post('/add_update/:id'   , passport.authMiddleware(),add_update);
 	app.post('/add_template'   , passport.authMiddleware(), add_template   );
 	
@@ -265,7 +267,10 @@ function projectInfo(req, res, next) {
 	var pname = req.params.id;
 	var status = "t";
 	var isCreator = false;
+	var currentDate = new Date();
+
 	var fundOverGoal;
+	var isOverEndDate = false;
 	function isLiked(name, liked_projects) {
 		for (var i=0; i<liked_projects.length; i++) {
 			if (liked_projects[i].pname === name) return true
@@ -279,6 +284,10 @@ function projectInfo(req, res, next) {
 	}else {
 		ctx = data.rows.length;
 		tbl = data.rows;
+        var projEndDate = new Date(tbl[0].e_date);
+        if(currentDate > projEndDate) {
+            isOverEndDate = true;
+        }
 	}
     pool.query(sql_query.query.get_tier, [pname], (err, data) => {
         if(err || !data.rows || data.rows.length == 0) {
@@ -327,7 +336,6 @@ function projectInfo(req, res, next) {
         funds = data.rows;
         fundPercentage = parseInt(funds[0].sum) / parseInt(tbl[0].f_goal) * 100;
         fundOverGoal = (parseInt(funds[0].sum) + " / " + parseInt(tbl[0].f_goal));
-        console.log(fundOverGoal);
 	}
 	pool.query(sql_query.query.all_liked, [username], (err, data) => {
 		if (err || !data.rows || data.rows.length === 0) {
@@ -338,7 +346,7 @@ function projectInfo(req, res, next) {
 
 
 
-    basic(req, res, 'projectInfo', { ctx: ctx, tbl: tbl, isLiked : isLiked, likes : likes, tiers : tiers, funds: funds, fundPercentage: fundPercentage, fundOverGoal: fundOverGoal, alltiers: alltiers,allcomments: allcomments, allupdates: allupdates, isCreator: isCreator, moment: moment, project_msg: msg(req, 'add', 'Project loaded', 'Project does not exist'), auth: true });
+    basic(req, res, 'projectInfo', { ctx: ctx, tbl: tbl, isLiked : isLiked, likes : likes, tiers : tiers, funds: funds, fundPercentage: fundPercentage, fundOverGoal: fundOverGoal, alltiers: alltiers,allcomments: allcomments, allupdates: allupdates, isCreator: isCreator, moment: moment, isOverEndDate: isOverEndDate , project_msg: msg(req, 'add', 'Project loaded', 'Project does not exist'), auth: true });
 });
 });
 });
@@ -406,7 +414,7 @@ function fundings(req, res, next) {
 			ctx = data.rows.length;
 			tbl = data.rows;
 		}
-		basic(req, res, 'fundings', { ctx: ctx, tbl: tbl, moment: moment, auth: true });
+		basic(req, res, 'fundings', { ctx: ctx, tbl: tbl, moment: moment, project_msg: msg(req, 'withdraw', 'Funding Withdrawn successfully', "Funds cannot be withdrawn as Project's End date has passed "), auth: true });
 	});
 }
 
@@ -521,6 +529,7 @@ function add_follower(req, res, next) {
 		}
 	});
 }
+
 function delete_follower(req, res, next) {
 	var username = req.user.username;
 	var cname = req.body.cname;
@@ -530,8 +539,8 @@ function delete_follower(req, res, next) {
 			res.redirect('/creators?delete=fail');
 		} else {
 			res.redirect('/creators?delete=pass');
-		}
-	});
+}
+});
 }
 function add_template(req, res, next) {
 	var aname = req.user.username;
@@ -554,6 +563,7 @@ function add_fund(req, res, next) {
 	var date = today.getFullYear() + '-' + (today.getMonth() + 1) + '-' + today.getDate();
 	var funding = parseInt(req.body.funding);
 	var status = "t";
+	var ifFundingExist = false;
 	pool.query(sql_query.query.get_tier, [pname, funding], (err, data) => {
 		if (err || !data.rows || data.rows.length == 0) {
 			console.error("Error in getting tier");
@@ -561,15 +571,63 @@ function add_fund(req, res, next) {
 		} else {
 			tname = data.rows[0].tname;
 		}
-		pool.query(sql_query.query.add_fund, [pname, tname, username, date, funding, status], (err, data) => {
-			if (err) {
-				console.error("Error in adding fund");
-				res.redirect('/projects');
-			} else {
-				res.redirect('/fundings');
-			}
-		});
-	});
+    pool.query(sql_query.query.check_if_fund_exists, [pname, tname, username], (err, data) => {
+        if (err) {
+            console.error("Error in adding fund");
+        } else {
+            checkTable= data.rows[0].count;
+            if(checkTable >0) {
+                ifFundingExist= true;
+                pool.query(sql_query.query.delete_funding, [pname, tname, username], (err, data) => {
+                    if (err) {
+                        console.error("Error in adding fund");
+                    } else {
+                        console.log("success delete")
+            }
+            });
+            }
+        }
+    })
+    pool.query(sql_query.query.add_fund, [pname, tname, username, date, funding, status], (err, data) => {
+        if (err) {
+            console.error("Error in adding fund");
+            res.redirect('/projects');
+        } else {
+            res.redirect('/fundings');
+        }
+    });
+});
+}
+
+function delete_fund (req, res, next) {
+	var username = req.user.username;
+	var pname = req.params.id;
+	var status = "f";
+	var currentDate = new Date();
+    pool.query(sql_query.query.project_info, [pname], (err, data) => {
+        if (err || !data.rows || data.rows.length == 0) {
+        console.error("Error in getting tier");
+        res.redirect('/projects');
+    } else {
+        tbl = data.rows;
+        console.log(tbl);
+        var projEndDate = new Date(tbl[0].e_date);
+        if(currentDate > projEndDate) {
+            res.redirect('/fundings?withdraw=fail');
+        }
+        else{
+            pool.query(sql_query.query.withdraw_fund, [username, pname ,status], (err, data) => {
+                if (err) {
+                    console.error("Error in deleting fund");
+                    res.redirect('/fundings?withdraw=fail');
+                } else {
+                    res.redirect('/fundings?withdraw=pass');
+        }
+        });
+        }
+    }
+
+});
 }
 
 function add_update(req, res, next) {
@@ -589,24 +647,6 @@ function add_update(req, res, next) {
 });
 }
 
-// function add_fund(req, res, next) {
-//     var username = req.user.username;
-//     var pname  = req.params.id;
-//     var today = new Date();
-//     var date = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate();
-//     var status = "t";
-//     var tnameFunding = req.body.tier.split(",");
-// 	var tname = tnameFunding[0];
-// 	var funding = tnameFunding[1];
-//     pool.query(sql_query.query.add_fund, [pname, tname, username, date , funding , status ], (err, data) => {
-//         if(err) {
-//             console.error("Error in adding fund");
-//             res.redirect('/fundings?add=fail');
-//         } else {
-//             res.redirect('/fundings?add=pass');
-// }
-// });
-// }
 
 function reg_user(req, res, next) {
 	var username = req.body.username;

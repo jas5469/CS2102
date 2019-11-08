@@ -170,7 +170,10 @@
                         <button onclick="clickedLike()" class="btn btn-primary" type="button" value="false"
                             id="<%= tbl[0].pname%>">Like</button>
                         <% } %>
-                    </form> 
+                    </form>
+                    <div id="cannotFund" style="text-align: center; padding: 30px">
+                        <span><a style="font-weight: Bold; font-size: large;"> Funding Window is now closed as End date has passed</a></span>
+                    </div>
                     <div id="toFund" >
                         <form method="post" action="/add_fund/<%= tbl[0].pname %>">
                             <div  class="input-group" style="padding-top: 30px">
@@ -251,6 +254,16 @@
     else{
         $("#toFund").hide();
         $("#toUpdate").show();
+    }
+
+    var toShowFund = <%= isOverEndDate%>;
+    if(toShowFund == true) {
+        $("#toFund").hide();
+        $("#cannotFund").show();
+    }
+    else{
+        $("#toFund").show();
+        $("#cannotFund").hide();
     }
 
 </script>

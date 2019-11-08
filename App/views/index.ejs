@@ -54,7 +54,7 @@
 <!--										<a class="nav-link <%= page==="projectInfo" ? "active" : "" %>" href="<%= page==="projectInfo" ? "#" : "/projectInfo" %>" value="<%= tbl[i].pname %>" name="pname"><%= tbl[i].pname%>-->
 										<a href="/projectInfo/<%= tbl[i].pname %>"> <%= tbl[i].pname %></a>
 									</td>
-									<td><%= tbl[i].cname%></td>
+									<td><a href="/creatorInfo/<%= tbl[i].cname %>"><%= tbl[i].cname%></a></td>
 								</tr>
 							<% } %>
 							</tbody>

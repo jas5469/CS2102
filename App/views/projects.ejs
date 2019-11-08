@@ -111,6 +111,17 @@
 										<textarea class="form-control" id="descr" name="descr" rows="5" placeholder="Enter Description"></textarea>
 									</div>
 								</div>
+								<label for="tiers" class="col-sm-2 col-form-label pl-0"><b>Funding Tiers</b></label>
+								<div class="form-group row" name="tiers">
+								  <div class="col">
+								  	<input type="text" class="form-control tier_name_new mb-2" id="tier_name_0" name="tier_name_0"  value="T0" readonly="readonly">
+								    <input type="text" class="form-control tier_name_new mb-2" id="tier_name_1" name="tier_name_1"  placeholder="Enter Tier Name">
+								  </div>
+								  <div class="col">
+								  	<input type="text" class="form-control mb-2" id="tier_value_0" name="tier_value_0"  value="0" readonly="readonly">
+								    <input type="text" class="form-control mb-2" id="tier_value_1" name="tier_value_1"  placeholder="Enter Tier Value">
+								  </div>
+								</div>
 							</div>
 							<div class="card-footer small text-muted"><button type="submit" class="btn btn-secondary">Add Project</button></div>
 						</form>
@@ -122,3 +133,34 @@
 		<%- include bottomscript.ejs %>
   </body>
 </html>
+<script>
+	$('.tier_name_new').on('input', function() {
+    let $tier_name = $(this);
+    console.log($tier_name);
+    let $tier_name_clone = $tier_name.clone()
+
+    let name = $tier_name_clone.attr('name')
+    let n = parseInt(name.split('_')[2]) + 1
+    name = 'tier_name_' + n
+    id = 'tier_name_' +n
+
+    $tier_name_clone.val('')
+    $tier_name_clone.attr('name', name)
+    $tier_name_clone.attr('id', id)
+    $tier_name_clone.appendTo($tier_name.parent())
+    $tier_name.removeClass('tier_name_new')
+    $tier_name.off('input', arguments.callee)
+    $tier_name_clone.on('input', arguments.callee)
+
+    let $tier_value = $('#tier_value_'+(n-1))
+    let $tier_value_clone = $tier_value.clone()
+
+    name = 'tier_value_' + n
+    id = 'tier_value_' + n
+
+    $tier_value_clone.val('')
+    $tier_value_clone.attr('name', name)
+    $tier_value_clone.attr('id', id)
+    $tier_value_clone.appendTo($tier_value.parent())
+  });
+</script>

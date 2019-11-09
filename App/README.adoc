@@ -1,0 +1,17 @@
+# FundME
+Group 33: CS2102 AY2019/20 Sem 1 Project
+
+=== Introduction
+FundME is a crowdfunding application for aspiring creators to publish their project to get funding and for users who are looking to fund a project.
+
+=== Setting Up
+1. Install https://www.postgresql.org/download/[PostgreSQL] for your operating system. Remember the username and password that you have set.
+2. Install the https://nodejs.org/en/download/[NodeJS] package for your operating system. 
+3. Using your terminal, type `node -v` to check if it was installed correctly. A Node version number should appear.
+4. Check if _npm_ was also installed automatically by typing `npm -v` in your terminal. An npm version number should appear.
+5. Type `npm install` in your terminal to install various additional third-party packages needed.
+6. Use any code editor to edit the _.env_ file to your username and password that you set in step 1. 
+* Format: `postgres://username:password@localhost:5432/postgres`
+* Default username and password are both `postgres`.
+7. Copy and paste all the contents of _schema.sql_ into your Postgres database after you have logged in. Ensure all table creations and insertions were executed correctly without errors.
+8. To run the app, navigate to the _\App_ folder within the project and type `npm start` in your terminal, then go to the address bar of your internet browser and type `localhost:3000`. 
